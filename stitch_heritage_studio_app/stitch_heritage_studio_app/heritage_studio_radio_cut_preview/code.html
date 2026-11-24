@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "primary-fixed-dim": "#fabc4d", "tertiary-container": "#eda539", "tertiary": "#ffc476", "on-primary-container": "#5e4000", "secondary-container": "#846000", "on-background": "#ede0dc", "on-primary-fixed": "#281900", "on-primary": "#432c00", "primary": "#ffc665", "secondary": "#efc05f", "on-secondary-fixed": "#261900", "surface-tint": "#fabc4d", "on-secondary-container": "#ffe0aa", "surface-dim": "#181210", "outline": "#9d8f7c", "secondary-fixed-dim": "#efc05f", "on-tertiary-container": "#623e00", "on-error": "#690005", "on-secondary": "#402d00", "inverse-surface": "#ede0dc", "tertiary-fixed": "#ffddb5", "error-container": "#93000a", "surface-bright": "#3f3835", "surface-variant": "#3b3331", "secondary-fixed": "#ffdea3", "primary-fixed": "#ffdead", "surface-container": "#251e1c", "on-tertiary-fixed-variant": "#633f00", "on-tertiary": "#462b00", "surface-container-lowest": "#130d0b", "inverse-on-surface": "#362f2c", "background": "#181210", "tertiary-fixed-dim": "#ffb956", "surface": "#181210", "on-surface": "#ede0dc", "surface-container-low": "#201a18", "error": "#ffb4ab", "on-primary-fixed-variant": "#604100", "on-tertiary-fixed": "#2a1800", "on-error-container": "#ffdad6", "inverse-primary": "#7e5700", "surface-container-highest": "#3b3331", "primary-container": "#e5a93c", "on-surface-variant": "#d4c4b0", "outline-variant": "#504535", "on-secondary-fixed-variant": "#5d4200", "surface-container-high": "#2f2826" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-md": "1rem", "space-lg": "1.5rem", "gutter-desktop": "1.5rem", "margin-desktop": "2.5rem", "space-xs": "0.25rem", "space-2xl": "3.5rem", "margin-tablet": "1.5rem", "space-sm": "0.5rem", "space-xl": "2.25rem", "gutter": "1rem", "margin": "1rem" }, "fontFamily": { "label-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "headline-xl-mobile": ["Playfair Display"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Playfair Display"], "headline-lg": ["Playfair Display"], "body-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Playfair Display"], "headline-xl": ["Playfair Display"], "title-lg": ["Plus Jakarta Sans"] }, "fontSize": { "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0", "fontWeight": "400" }], "title-md": ["17px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }], "headline-xl-mobile": ["34px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.03em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "0", "fontWeight": "500" }], "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "400" }], "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "title-lg": ["20px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased min-h-screen selection:bg-primary selection:text-on-primary"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_4px_24px_rgba(10,7,6,0.6)]"><div class="h-20 w-full max-w-[1200px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md min-w-0 flex-shrink-0"><img alt="Heritage Studio Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrB8fVN-e-KmUj0IbuMsgz1cli5cOFM0VXZTNo1oi06bWsAejE_r6GEUIozFVgK3zvfZn7MGUc--k1RdShTfU5IP_XIypFW8uudeF4KY2jIvzODZlbKafM9yDI72VZvL7w7cn6vNAkFiE5qJ9RjwoXY3LjYZDPDnpFFwAeFa3przMAg9hYg9dsdnxQZv5zzEC7njzSh7UVqy2F8uj0yqYapmyUGE1ohNGrmU5pV8ULeV"/><div class="flex flex-col"><span class="font-title-md text-title-md text-on-surface tracking-tight font-bold hidden sm:inline">Heritage Studio</span><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span><span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">Grandmother Almaz's Journey • Draft</span></div></div></div><div class="flex items-center gap-space-md flex-shrink-0"><div class="inline-flex items-center px-space-sm py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm"><span class="text-primary font-bold mr-1">EN</span> / አማርኛ</div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(229,169,60,0.35)]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="w-full bg-surface-container-low/95 backdrop-blur-md"><div class="max-w-[1200px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop"><nav aria-label="Production Milestones" class="flex items-center justify-between overflow-x-auto py-2.5 gap-space-xs no-scrollbar" data-active-classes="bg-primary-container text-on-primary-container font-bold rounded-lg shadow-[0_0_16px_rgba(229,169,60,0.25)]"><a class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap font-label-md text-label-md" data-path="welcome" href="#"><span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm">1</span>Welcome</a><div class="w-4 h-[1px] bg-outline-variant/40 flex-shrink-0 hidden sm:block"></div><a class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap font-label-md text-label-md" data-path="story-input" href="#"><span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm">2</span>Story Input</a><div class="w-4 h-[1px] bg-outline-variant/40 flex-shrink-0 hidden sm:block"></div><a class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap font-label-md text-label-md" data-path="storyboard" href="#"><span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm">3</span>Storyboard</a><div class="w-4 h-[1px] bg-outline-variant/40 flex-shrink-0 hidden sm:block"></div><a aria-current="page" class="flex items-center gap-1.5 px-3 py-1.5 transition-colors whitespace-nowrap bg-primary-container text-on-primary-container font-bold rounded-lg shadow-[0_0_16px_rgba(229,169,60,0.25)]" data-path="radio-cut" href="#"><span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm">4</span>Radio Cut</a><div class="w-4 h-[1px] bg-outline-variant/40 flex-shrink-0 hidden sm:block"></div><a class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap font-label-md text-label-md" data-path="processing" href="#"><span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm">5</span>Processing</a><div class="w-4 h-[1px] bg-outline-variant/40 flex-shrink-0 hidden sm:block"></div><a class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors whitespace-nowrap font-label-md text-label-md" data-path="final-film" href="#"><span class="w-5 h-5 rounded-full bg-surface-container flex items-center justify-center font-label-sm text-label-sm">6</span>Final Film</a></nav></div></div></header><main class="w-full min-h-screen pt-32 bg-surface max-w-[1200px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop"><div class="flex flex-col w-full pb-16">
+<!-- Top Flow Status Indicator -->
+<div class="flex items-center justify-between py-space-sm mb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+        MILESTONE 4 OF 6 • ACOUSTIC AUDITION
+      </span>
+<span class="hidden sm:inline-flex text-on-surface-variant font-label-sm text-label-sm tracking-widest uppercase">
+        Master Audio Stem v2.4 (Uncompressed AI Synthesis)
+      </span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary">verified</span>
+<span>Oral Heritage Archive Lock: <strong class="text-on-surface">Harar • 1974</strong></span>
+</div>
+</div>
+<!-- Editorial Page Title -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md pb-space-lg">
+<div class="max-w-3xl">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold">Soundscape Assembly</span>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mt-1">Radio Cut Preview</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 max-w-2xl">
+        Listen to the voiceover pacing, emotional tempo, and musical score before final video assembly. The human voice carries the generational pulse.
+      </p>
+</div>
+<div class="flex items-center gap-space-sm self-start md:self-auto">
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors font-label-md text-label-md" title="Download Audio Master" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">download</span>
+        Export Stems (.WAV)
+      </button>
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors font-label-md text-label-md" title="Toggle Studio Headphones EQ" type="button">
+<span class="material-symbols-outlined text-[18px]">equalizer</span>
+        Cinema EQ
+      </button>
+</div>
+</div>
+<!-- Main Grid: Player Suite & Feedback Console -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Left & Center: Player Stage (8 Columns) -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- Cinematic Sound Box Container -->
+<div class="relative bg-surface-container-low rounded-xl p-space-md md:p-space-lg shadow-[0_12px_40px_rgba(10,7,6,0.65)] overflow-hidden">
+<!-- Ambient Warm Projection Glow -->
+<div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-primary/10 blur-[80px] pointer-events-none"></div>
+<div class="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-tertiary-container/10 blur-[90px] pointer-events-none"></div>
+<!-- Upper Bar: Live Film Cel Preview & Subtitle Toggle -->
+<div class="flex items-center justify-between gap-space-sm pb-space-md">
+<div class="flex items-center gap-3">
+<div class="w-12 h-8 rounded bg-surface-container-highest overflow-hidden flex-shrink-0 shadow-sm relative group cursor-pointer">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Sepia toned archival photographic portrait of Grandmother Almaz as a young woman in 1970s Ethiopia holding a woven wicker basket under soft golden hour sunlight, fine film grain, cinematic warm umber tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmfkxfwAbY8T7GDNkvrpxoLqmlDTzYpvVLGp5XfxMcVk-cSCNzbmKHUJ0AWiL79gC2JY0y-X9E32zTBtrlYXJP4WvUjYAPAFlzmokawcXIkh5pYoua_8GEqjSKp7Ad1qc7EyJ_rwexvVJtbZtVDlracki55E4HvTOE6zE-QbxY75BUrqqart1MXl-2rjtImNHJwKCzY27utFan6cHhmaKMO0Gl7ZgmCp5OP24uh8Y"/>
+<div class="absolute inset-0 bg-surface-dim/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[14px]">movie</span>
+</div>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md text-on-surface truncate">Act II: The Morning Oven &amp; The Letter</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Scene 4 of 9 • Synced with 12 Storyboard Cels
+              </span>
+</div>
+</div>
+<!-- Captions [CC] Toggle Button -->
+<button aria-pressed="true" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-bold shadow-[0_0_14px_rgba(229,169,60,0.3)] transition-all cursor-pointer" id="captionToggleBtn" type="button">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">subtitles</span>
+<span>Captions ON [CC]</span>
+</button>
+</div>
+<!-- Interactive Dynamic Audio Waveform Canvas Box -->
+<div class="mt-space-sm bg-surface-container-lowest rounded-xl p-space-md md:p-space-lg relative shadow-inner">
+<!-- Metadata Track Header -->
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant mb-space-sm">
+<span class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-[14px] animate-pulse">graphic_eq</span>
+              VOICE STEM: VOC-ALMAZ-TAPE-01.AI
+            </span>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-mono text-[12px]">24-bit / 48kHz</span>
+<span class="text-outline">•</span>
+<span class="font-mono text-primary font-bold">0:34 / 1:18</span>
+</div>
+</div>
+<!-- Rich Waveform Display with SVG Bars & Golden Playhead -->
+<div class="relative w-full h-32 md:h-36 flex items-center cursor-pointer select-none group" id="waveformContainer" title="Click anywhere along the timeline to scrub audio">
+<!-- SVG Audio Waves Representation -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 120">
+<defs>
+<!-- Elapsed Gold Gradient -->
+<lineargradient id="waveElapsed" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#FFDEAD"></stop>
+<stop offset="50%" stop-color="#E5A93C"></stop>
+<stop offset="100%" stop-color="#846000"></stop>
+</lineargradient>
+<!-- Remaining Unplayed Wave Gradient -->
+<lineargradient id="waveRemaining" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#3B3331"></stop>
+<stop offset="100%" stop-color="#201A18"></stop>
+</lineargradient>
+</defs>
+<!-- Waveform Bars Array (Precomputed Archival Cadence) -->
+<!-- Elapsed Section (width: ~43.5% = 348px of 800) -->
+<g fill="url(#waveElapsed)">
+<!-- Low resonance pre-roll -->
+<rect height="16" rx="2" width="4" x="0" y="52"></rect>
+<rect height="24" rx="2" width="4" x="7" y="48"></rect>
+<rect height="32" rx="2" width="4" x="14" y="44"></rect>
+<rect height="44" rx="2" width="4" x="21" y="38"></rect>
+<rect height="20" rx="2" width="4" x="28" y="50"></rect>
+<rect height="40" rx="2" width="4" x="35" y="40"></rect>
+<rect height="56" rx="2" width="4" x="42" y="32"></rect>
+<rect height="72" rx="2" width="4" x="49" y="24"></rect>
+<rect height="60" rx="2" width="4" x="56" y="30"></rect>
+<rect height="30" rx="2" width="4" x="63" y="45"></rect>
+<rect height="20" rx="2" width="4" x="70" y="50"></rect>
+<rect height="48" rx="2" width="4" x="77" y="36"></rect>
+<rect height="76" rx="2" width="4" x="84" y="22"></rect>
+<rect height="84" rx="2" width="4" x="91" y="18"></rect>
+<rect height="68" rx="2" width="4" x="98" y="26"></rect>
+<rect height="36" rx="2" width="4" x="105" y="42"></rect>
+<rect height="24" rx="2" width="4" x="112" y="48"></rect>
+<rect height="12" rx="2" width="4" x="119" y="54"></rect>
+<!-- Dramatic Pause (Breath marker) -->
+<rect height="8" opacity="0.6" rx="2" width="4" x="126" y="56"></rect>
+<rect height="8" opacity="0.6" rx="2" width="4" x="133" y="56"></rect>
+<!-- Laughter & Story Peak -->
+<rect height="52" rx="2" width="4" x="140" y="34"></rect>
+<rect height="80" rx="2" width="4" x="147" y="20"></rect>
+<rect height="96" rx="2" width="4" x="154" y="12"></rect>
+<rect height="88" rx="2" width="4" x="161" y="16"></rect>
+<rect height="64" rx="2" width="4" x="168" y="28"></rect>
+<rect height="44" rx="2" width="4" x="175" y="38"></rect>
+<rect height="60" rx="2" width="4" x="182" y="30"></rect>
+<rect height="92" rx="2" width="4" x="189" y="14"></rect>
+<rect height="76" rx="2" width="4" x="196" y="22"></rect>
+<rect height="48" rx="2" width="4" x="203" y="36"></rect>
+<rect height="28" rx="2" width="4" x="210" y="46"></rect>
+<rect height="56" rx="2" width="4" x="217" y="32"></rect>
+<rect height="72" rx="2" width="4" x="224" y="24"></rect>
+<rect height="84" rx="2" width="4" x="231" y="18"></rect>
+<rect height="68" rx="2" width="4" x="238" y="26"></rect>
+<rect height="32" rx="2" width="4" x="245" y="44"></rect>
+<rect height="16" rx="2" width="4" x="252" y="52"></rect>
+<rect height="44" rx="2" width="4" x="259" y="38"></rect>
+<rect height="76" rx="2" width="4" x="266" y="22"></rect>
+<rect height="90" rx="2" width="4" x="273" y="15"></rect>
+<rect height="80" rx="2" width="4" x="280" y="20"></rect>
+<rect height="50" rx="2" width="4" x="287" y="35"></rect>
+<rect height="36" rx="2" width="4" x="294" y="42"></rect>
+<rect height="60" rx="2" width="4" x="301" y="30"></rect>
+<rect height="88" rx="2" width="4" x="308" y="16"></rect>
+<rect height="76" rx="2" width="4" x="315" y="22"></rect>
+<rect height="44" rx="2" width="4" x="322" y="38"></rect>
+<rect height="24" rx="2" width="4" x="329" y="48"></rect>
+<rect height="64" rx="2" width="4" x="336" y="28"></rect>
+<rect height="72" rx="2" width="4" x="343" y="24"></rect>
+</g>
+<!-- Remaining Section (from 350 to 800) -->
+<g fill="url(#waveRemaining)">
+<rect height="60" rx="2" width="4" x="350" y="30"></rect>
+<rect height="40" rx="2" width="4" x="357" y="40"></rect>
+<rect height="24" rx="2" width="4" x="364" y="48"></rect>
+<rect height="16" rx="2" width="4" x="371" y="52"></rect>
+<rect height="44" rx="2" width="4" x="378" y="38"></rect>
+<rect height="76" rx="2" width="4" x="385" y="22"></rect>
+<rect height="84" rx="2" width="4" x="392" y="18"></rect>
+<rect height="60" rx="2" width="4" x="399" y="30"></rect>
+<rect height="28" rx="2" width="4" x="406" y="46"></rect>
+<rect height="16" rx="2" width="4" x="413" y="52"></rect>
+<rect height="12" rx="2" width="4" x="420" y="54"></rect>
+<rect height="52" rx="2" width="4" x="427" y="34"></rect>
+<rect height="80" rx="2" width="4" x="434" y="20"></rect>
+<rect height="88" rx="2" width="4" x="441" y="16"></rect>
+<rect height="64" rx="2" width="4" x="448" y="28"></rect>
+<rect height="32" rx="2" width="4" x="455" y="44"></rect>
+<rect height="20" rx="2" width="4" x="462" y="50"></rect>
+<rect height="48" rx="2" width="4" x="469" y="36"></rect>
+<rect height="72" rx="2" width="4" x="476" y="24"></rect>
+<rect height="56" rx="2" width="4" x="483" y="32"></rect>
+<rect height="24" rx="2" width="4" x="490" y="48"></rect>
+<rect height="12" rx="2" width="4" x="497" y="54"></rect>
+<rect height="36" rx="2" width="4" x="504" y="42"></rect>
+<rect height="68" rx="2" width="4" x="511" y="26"></rect>
+<rect height="76" rx="2" width="4" x="518" y="22"></rect>
+<rect height="52" rx="2" width="4" x="525" y="34"></rect>
+<rect height="28" rx="2" width="4" x="532" y="46"></rect>
+<rect height="16" rx="2" width="4" x="539" y="52"></rect>
+<rect height="44" rx="2" width="4" x="546" y="38"></rect>
+<rect height="64" rx="2" width="4" x="553" y="28"></rect>
+<rect height="84" rx="2" width="4" x="560" y="18"></rect>
+<rect height="92" rx="2" width="4" x="567" y="14"></rect>
+<rect height="72" rx="2" width="4" x="574" y="24"></rect>
+<rect height="40" rx="2" width="4" x="581" y="40"></rect>
+<rect height="24" rx="2" width="4" x="588" y="48"></rect>
+<rect height="12" rx="2" width="4" x="595" y="54"></rect>
+<rect height="48" rx="2" width="4" x="602" y="36"></rect>
+<rect height="76" rx="2" width="4" x="609" y="22"></rect>
+<rect height="68" rx="2" width="4" x="616" y="26"></rect>
+<rect height="44" rx="2" width="4" x="623" y="38"></rect>
+<rect height="20" rx="2" width="4" x="630" y="50"></rect>
+<rect height="16" rx="2" width="4" x="637" y="52"></rect>
+<rect height="36" rx="2" width="4" x="644" y="42"></rect>
+<rect height="64" rx="2" width="4" x="651" y="28"></rect>
+<rect height="88" rx="2" width="4" x="658" y="16"></rect>
+<rect height="80" rx="2" width="4" x="665" y="20"></rect>
+<rect height="52" rx="2" width="4" x="672" y="34"></rect>
+<rect height="32" rx="2" width="4" x="679" y="44"></rect>
+<rect height="16" rx="2" width="4" x="686" y="52"></rect>
+<rect height="12" rx="2" width="4" x="693" y="54"></rect>
+<rect height="44" rx="2" width="4" x="700" y="38"></rect>
+<rect height="68" rx="2" width="4" x="707" y="26"></rect>
+<rect height="76" rx="2" width="4" x="714" y="22"></rect>
+<rect height="56" rx="2" width="4" x="721" y="32"></rect>
+<rect height="32" rx="2" width="4" x="728" y="44"></rect>
+<rect height="20" rx="2" width="4" x="735" y="50"></rect>
+<rect height="16" rx="2" width="4" x="742" y="52"></rect>
+<rect height="28" rx="2" width="4" x="749" y="46"></rect>
+<rect height="52" rx="2" width="4" x="756" y="34"></rect>
+<rect height="72" rx="2" width="4" x="763" y="24"></rect>
+<rect height="60" rx="2" width="4" x="770" y="30"></rect>
+<rect height="28" rx="2" width="4" x="777" y="46"></rect>
+<rect height="16" rx="2" width="4" x="784" y="52"></rect>
+<rect height="12" rx="2" width="4" x="791" y="54"></rect>
+</g>
+<!-- Subtle Background Score Horizon (Thin Gold Harmonic Curve) -->
+<path d="M0,85 Q100,75 200,90 T400,82 T600,95 T800,88" fill="none" stroke="#E5A93C" stroke-dasharray="3 3" stroke-opacity="0.35" stroke-width="1"></path>
+</svg>
+<!-- Luminous Gold Playhead Needle (at 43.5%) -->
+<div class="absolute left-[43.5%] top-0 bottom-0 w-0.5 bg-primary shadow-[0_0_12px_#fabc4d] flex items-center justify-center pointer-events-none">
+<!-- Playhead Thumb Indicator -->
+<div class="absolute -top-1 w-4 h-4 rounded-full bg-primary shadow-[0_0_14px_rgba(250,188,77,0.8)] border border-surface flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-on-primary"></span>
+</div>
+<div class="absolute -bottom-1 w-2 h-2 rotate-45 bg-primary shadow-[0_0_8px_#fabc4d]"></div>
+</div>
+<!-- Emotion Chapter Markers on Waveform -->
+<div class="absolute bottom-1 left-[18%] px-2 py-0.5 rounded bg-surface-container/80 text-[10px] font-mono text-tertiary backdrop-blur-sm pointer-events-none">
+              [Laughter]
+            </div>
+<div class="absolute bottom-1 left-[58%] px-2 py-0.5 rounded bg-surface-container/80 text-[10px] font-mono text-on-surface-variant backdrop-blur-sm pointer-events-none">
+              [Cello Swell]
+            </div>
+</div>
+<!-- Bottom Time Markers -->
+<div class="flex items-center justify-between font-mono text-label-sm text-outline-variant pt-2">
+<span>00:00</span>
+<span class="text-primary font-bold">00:34 CURRENT</span>
+<span>01:18 TOTAL</span>
+</div>
+</div>
+<!-- Master Transport & Interactive Controls Strip -->
+<div class="mt-space-md pt-space-sm flex flex-col md:flex-row items-center justify-between gap-space-md">
+<!-- Center Left: Transport Controls -->
+<div class="flex items-center gap-space-md">
+<!-- Skip Back 10s -->
+<button aria-label="Skip backwards 10 seconds" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors focus:ring-2 focus:ring-primary" type="button">
+<span class="material-symbols-outlined text-[24px]">replay_10</span>
+</button>
+<!-- Large 56px Circular Cinematic Gold Play/Pause Button -->
+<button aria-label="Pause audio" class="w-14 h-14 rounded-full bg-primary hover:bg-surface-tint text-on-primary font-bold flex items-center justify-center shadow-[0_4px_24px_rgba(229,169,60,0.45)] hover:scale-105 active:scale-95 transition-all focus:outline-none focus:ring-4 focus:ring-primary/40 cursor-pointer" id="masterPlayBtn" type="button">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<!-- Skip Forward 10s -->
+<button aria-label="Skip forward 10 seconds" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors focus:ring-2 focus:ring-primary" type="button">
+<span class="material-symbols-outlined text-[24px]">forward_10</span>
+</button>
+<!-- Loop Toggle -->
+<button aria-label="Loop current scene" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">repeat</span>
+</button>
+</div>
+<!-- Center Right: Quick Speed & Balance Status -->
+<div class="flex items-center gap-space-md flex-wrap justify-center">
+<!-- Pacing Speed Selector -->
+<div class="flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-outline">TEMPO</span>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md" type="button">0.8x</button>
+<button class="px-2 py-0.5 rounded bg-primary text-on-primary font-bold font-label-md text-label-md shadow-sm" type="button">1.0x</button>
+<button class="px-2 py-0.5 rounded text-on-surface-variant hover:text-on-surface font-label-md text-label-md" type="button">1.2x</button>
+</div>
+<!-- Master Volume Mute -->
+<div class="flex items-center gap-2 text-on-surface-variant">
+<button aria-label="Mute audio" class="hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">volume_up</span>
+</button>
+<div class="w-20 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-4/5 h-full bg-primary rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Voice Selection & Audio Track Mixing Sliders Panel -->
+<div class="mt-space-lg pt-space-md bg-surface-container/60 rounded-xl p-space-md grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Voice Selector Dropdown -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider flex items-center gap-1.5" for="voicePersonaSelect">
+<span class="material-symbols-outlined text-[16px]">record_voice_over</span>
+              Synthesized Voice Model
+            </label>
+<div class="relative">
+<select class="w-full h-12 bg-surface-container-low text-on-surface px-3 py-2 pr-10 rounded-lg appearance-none font-title-md text-title-md focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer" id="voicePersonaSelect">
+<option selected="" value="warm-amharic">Warm Storyteller • Amharic Accent (Recommended)</option>
+<option value="classic-elder">Classic Elder • Gentle &amp; Reverent Tone</option>
+<option value="natural-vo">Natural Voiceover • Documentary Standard</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3.5 text-on-surface-variant pointer-events-none text-[20px]">expand_more</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Trained on Almaz's 1994 cassette tape excerpts with family consent.</span>
+</div>
+<!-- Background Music Score Slider -->
+<div class="flex flex-col gap-1.5 justify-center">
+<div class="flex items-center justify-between">
+<label class="font-label-sm text-label-sm text-on-surface font-semibold flex items-center gap-1.5" for="scoreMixSlider">
+<span class="material-symbols-outlined text-[16px] text-tertiary">music_note</span>
+                Background Score: Acoustic Masenqo &amp; Warm Cello
+              </label>
+<span class="font-mono text-label-md text-label-md text-primary font-bold" id="scoreVolumeDisplay">25%</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline text-[18px]">music_off</span>
+<input class="w-full accent-primary h-2 bg-surface-container-highest rounded-lg cursor-pointer" id="scoreMixSlider" max="100" min="0" oninput="document.getElementById('scoreVolumeDisplay').innerText = this.value + '%'" type="range" value="25"/>
+<span class="material-symbols-outlined text-primary text-[18px]">volume_up</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>Subtle Ambience</span>
+<span>Balanced</span>
+<span>Cinematic Drama</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Transcript Card with Live Spoken Glow -->
+<div class="bg-surface-container rounded-xl p-space-md md:p-space-lg shadow-md relative overflow-hidden">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">format_quote</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">Live Synced Transcript</h3>
+</div>
+<span class="px-2.5 py-1 rounded bg-surface-container-high text-primary font-mono text-label-sm text-label-sm flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            TIMECODE 00:28 – 00:46
+          </span>
+</div>
+<div class="flex flex-col gap-space-sm font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+<p class="text-outline">
+            "...the train station in Dire Dawa had smelled of roasted cardamom seeds and engine grease."
+          </p>
+<!-- Current Active Highlighted Spoken Segment with warm gold halo -->
+<div class="p-space-md rounded-lg bg-surface-container-high text-on-surface shadow-[0_0_20px_rgba(229,169,60,0.18)] transition-all">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[22px] flex-shrink-0 mt-0.5">volume_up</span>
+<div>
+<span class="text-on-surface-variant text-label-sm font-label-sm uppercase tracking-wider block mb-1">Current Phrase (Almaz AI Voice)</span>
+<p class="font-headline-md text-headline-md text-primary font-normal italic">
+                  “I laughed so hard because my sister forgot the bread in the clay oven, but when we tasted the crust, it was the sweet taste of freedom itself.”
+                </p>
+<div class="flex items-center gap-4 mt-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[14px]">sentiment_very_satisfied</span>
+                    Detected Emotional Arc: Joyful Nostalgia
+                  </span>
+<span>•</span>
+<span class="text-outline font-mono">Pause Duration: 1.2s before next breath</span>
+</div>
+</div>
+</div>
+</div>
+<p class="text-outline">
+            "We walked towards the border with our small wooden suitcases, never looking behind us even once..."
+          </p>
+</div>
+</div>
+</div>
+<!-- Right: Feedback & Reflection Console (4 Columns) -->
+<div class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Prominent Feedback Prompt Section -->
+<div class="bg-surface-container rounded-xl p-space-md md:p-space-lg shadow-xl relative">
+<!-- Archival Stamp Badge -->
+<div class="flex items-center justify-between pb-space-sm">
+<div class="inline-flex items-center gap-1.5 text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-[18px]">rate_review</span>
+            Storyteller Listening Check
+          </div>
+<span class="text-on-surface-variant text-label-sm font-label-sm">Family Review</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1">
+          Did this make you laugh? What confused you?
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">
+          Your feedback tunes the final emotional mix. Select quick reactions or dictate custom pacing notes.
+        </p>
+<!-- Quick Tags Interactive Chips Grid -->
+<div class="mt-space-md flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">One-Tap Sentiment Tags</span>
+<div class="flex flex-col gap-2">
+<!-- Tag 1 (Pre-selected) -->
+<button class="w-full text-left p-3 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center justify-between shadow-[0_0_12px_rgba(229,169,60,0.2)] hover:brightness-105 transition-all" onclick="this.classList.toggle('bg-primary-container'); this.classList.toggle('text-on-primary-container'); this.classList.toggle('bg-surface-container-high'); this.classList.toggle('text-on-surface');" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">sentiment_satisfied</span>
+<span>Laughed at the burnt bread memory! 😊</span>
+</span>
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</button>
+<!-- Tag 2 -->
+<button class="w-full text-left p-3 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-between hover:bg-surface-container-highest transition-all" onclick="this.classList.toggle('bg-primary-container'); this.classList.toggle('text-on-primary-container'); this.classList.toggle('bg-surface-container-high'); this.classList.toggle('text-on-surface');" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-tertiary">speed</span>
+<span>Pacing feels slightly fast</span>
+</span>
+<span class="material-symbols-outlined text-[18px] text-outline">add_circle</span>
+</button>
+<!-- Tag 3 -->
+<button class="w-full text-left p-3 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-between hover:bg-surface-container-highest transition-all" onclick="this.classList.toggle('bg-primary-container'); this.classList.toggle('text-on-primary-container'); this.classList.toggle('bg-surface-container-high'); this.classList.toggle('text-on-surface');" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">spellcheck</span>
+<span>Pronunciation of Harar was spot-on</span>
+</span>
+<span class="material-symbols-outlined text-[18px] text-outline">add_circle</span>
+</button>
+<!-- Tag 4 -->
+<button class="w-full text-left p-3 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center justify-between hover:bg-surface-container-highest transition-all" onclick="this.classList.toggle('bg-primary-container'); this.classList.toggle('text-on-primary-container'); this.classList.toggle('bg-surface-container-high'); this.classList.toggle('text-on-surface');" type="button">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">more_time</span>
+<span>Add more silence before the ending</span>
+</span>
+<span class="material-symbols-outlined text-[18px] text-outline">add_circle</span>
+</button>
+</div>
+</div>
+<!-- Direct Reflection Box -->
+<div class="mt-space-md flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-outline uppercase font-semibold flex items-center justify-between" for="reflectionInput">
+<span>Direct Reflection Box</span>
+<span class="text-primary font-mono text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">mic</span> Voice input ready
+            </span>
+</label>
+<div class="relative">
+<textarea class="w-full bg-surface-container-low text-on-surface p-3 rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary shadow-inner resize-none" id="reflectionInput" placeholder="Write your impressions or pacing notes here... E.g., 'At 0:42 Grandmother pauses, let's keep that pause long and silent.'" rows="4"></textarea>
+<button class="absolute bottom-2.5 right-2.5 p-1.5 rounded-full bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface-variant transition-colors" title="Record Voice Memo Feedback" type="button">
+<span class="material-symbols-outlined text-[18px]">mic</span>
+</button>
+</div>
+</div>
+<!-- Co-creator Signature / Consent Confirmation -->
+<div class="mt-space-md p-3 rounded-lg bg-surface-container-low flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center flex-shrink-0 text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]">family_restroom</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md text-on-surface text-[14px]">Reviewing as Almaz's Grandson (Kidus)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Changes sync automatically with Storyboard team</span>
+</div>
+</div>
+</div>
+<!-- Historical Context Card & Archival Prompt -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-3">
+<div class="flex items-center gap-2 text-primary font-label-sm text-label-sm uppercase font-semibold">
+<span class="material-symbols-outlined text-[16px]">history_edu</span>
+          Acoustic Provenance
+        </div>
+<div class="flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg bg-surface-container-highest overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close up archival macro photograph of a vintage 1970s Philips audio cassette tape with handwritten Amharic calligraphy label in umber ink, lit by warm desk lamp" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVtH5ZAU7xtRjc9tswfJmjfg7IqKZMAyd8wwX6X8KRpShIfp086R7Mi1_XCDCwo9fAyrKKQ_EIvStXi4GQEpp-1HmUDF2pbj7e-nb-KxBCVWWj_-zsB_ZQ9z2bGuE4YQrIBDb9UmV5rbBEQxeVTlwO65JUVOBKrzE40W5iwRykvlTHbDMXbrWzR3MHlo7WNiQMu8_bqwKzQNJNw8bSXPqXEpAWc4a4lZ7zMd8bwuY"/>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface leading-tight">1974 Harar Oral Cassette</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px] mt-0.5">Remastered with noise suppression. Authentic vocal timbre retained.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Global Production Action Dock -->
+<div class="mt-space-2xl pt-space-lg bg-surface-container-low/95 backdrop-blur-lg rounded-2xl p-space-md md:p-space-lg shadow-[0_16px_48px_rgba(10,7,6,0.8)] flex flex-col md:flex-row items-center justify-between gap-space-md">
+<!-- Left Navigation Back to Step 3 -->
+<a class="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors font-title-md text-title-md" data-path="storyboard" href="#">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+      Adjust Storyboard Shots
+    </a>
+<!-- Center Status Information -->
+<div class="flex items-center gap-space-md text-center md:text-left">
+<div class="hidden sm:flex w-10 h-10 rounded-full bg-primary/20 items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">auto_videocam</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">Ready for Final Video Assembly</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Rendering incorporates 4K upscale, archival grain, &amp; dual subtitles.</span>
+</div>
+</div>
+<!-- Right Primary Production CTA: Proceed to Render (Step 5) -->
+<a class="w-full md:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-primary hover:bg-surface-tint text-on-primary font-bold font-title-md text-title-md shadow-[0_4px_24px_rgba(229,169,60,0.4)] hover:shadow-[0_4px_32px_rgba(229,169,60,0.6)] transition-all cursor-pointer" data-path="processing" href="#">
+<span>Approve Audio &amp; Render Final Film</span>
+<span class="material-symbols-outlined text-[22px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<script>
+  // Simple micro-interaction for Play/Pause and Subtitles toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const playBtn = document.getElementById('masterPlayBtn');
+    if (playBtn) {
+      playBtn.addEventListener('click', () => {
+        const icon = playBtn.querySelector('.material-symbols-outlined');
+        if (icon.innerText === 'pause') {
+          icon.innerText = 'play_arrow';
+          playBtn.setAttribute('aria-label', 'Play audio');
+        } else {
+          icon.innerText = 'pause';
+          playBtn.setAttribute('aria-label', 'Pause audio');
+        }
+      });
+    }
+
+    const captionBtn = document.getElementById('captionToggleBtn');
+    if (captionBtn) {
+      captionBtn.addEventListener('click', () => {
+        const isPressed = captionBtn.getAttribute('aria-pressed') === 'true';
+        if (isPressed) {
+          captionBtn.setAttribute('aria-pressed', 'false');
+          captionBtn.classList.remove('bg-primary-container', 'text-on-primary-container', 'shadow-[0_0_14px_rgba(229,169,60,0.3)]');
+          captionBtn.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+          captionBtn.querySelector('span:last-child').innerText = 'Captions OFF [CC]';
+        } else {
+          captionBtn.setAttribute('aria-pressed', 'true');
+          captionBtn.classList.add('bg-primary-container', 'text-on-primary-container', 'shadow-[0_0_14px_rgba(229,169,60,0.3)]');
+          captionBtn.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+          captionBtn.querySelector('span:last-child').innerText = 'Captions ON [CC]';
+        }
+      });
+    }
+  });
+</script></main><footer class="w-full bg-surface-container-lowest mt-space-2xl shadow-[0_-4px_24px_rgba(10,7,6,0.8)]"><div class="max-w-[1200px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop py-space-xl flex flex-col md:flex-row items-center justify-between gap-space-lg"><div class="flex flex-col items-center md:items-start gap-space-xs text-center md:text-left"><div class="flex items-center gap-space-sm"><span class="font-title-md text-title-md text-primary font-headline-md">Heritage Studio</span><span class="w-1 h-1 rounded-full bg-outline"></span><span class="font-body-md text-body-md text-on-surface-variant">Preserve memories with care &amp; AI integrity</span></div><p class="font-label-sm text-label-sm text-outline">Honoring human oral histories through archival filmmaking and machine learning ethics.</p></div><div class="flex items-center gap-space-lg flex-wrap justify-center"><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Framework</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Accessibility Standards</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Ethics &amp; Consent</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Help Desk</a></div></div></footer></body></html>
