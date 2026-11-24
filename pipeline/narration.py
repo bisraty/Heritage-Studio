@@ -12,11 +12,14 @@ import yaml
 
 from pipeline.providers import gemini_audio, post_json, speech_request
 from pipeline.utils import CacheIndex, http_status, input_hash, log_run, retry, write_artifact
-from pipeline.validate import ROOT, validate_storyboard
+from pipeline.validate import ROOT, add_workdir_argument, validate_storyboard
 
 
 def load_project(root):
-    config = yaml.safe_load((root / "config.yaml").read_text(encoding="utf-8"))
+    config_path = root / "config.yaml"
+    if root != ROOT and not config_path.exists():
+        config_path = ROOT / "config.yaml"
+    config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     return config, validate_storyboard(root / config["paths"]["storyboard"])
 
 
@@ -38,7 +41,7 @@ def generate_narration(root, config, storyboard, *, shot_id=None, cached_only=Fa
     endpoint = settings["endpoint"].format(model=model)
     cache = CacheIndex(root / config["paths"]["cache_index"])
     log_path = root / config["paths"]["run_log"]
-    load_dotenv(root / ".env")
+    load_dotenv(ROOT / ".env")
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
     shots = [shot for shot in storyboard["shots"] if shot_id is None or shot["id"] == shot_id]
     if not shots:
@@ -89,11 +92,12 @@ def generate_narration(root, config, storyboard, *, shot_id=None, cached_only=Fa
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    add_workdir_argument(parser)
     parser.add_argument("--shot", type=int, help="Generate only this shot ID")
     args = parser.parse_args()
     try:
-        config, storyboard = load_project(ROOT)
-        paths = generate_narration(ROOT, config, storyboard, shot_id=args.shot)
+        config, storyboard = load_project(args.workdir)
+        paths = generate_narration(args.workdir, config, storyboard, shot_id=args.shot)
     except (ValueError, OSError, KeyError, yaml.YAMLError) as error:
         parser.exit(1, f"{error}\n")
     print(f"Narration ready for {len(paths)} shot(s)")

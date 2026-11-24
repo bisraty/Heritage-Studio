@@ -11,7 +11,7 @@ import yaml
 from pipeline.keyframes import Keyframes
 from pipeline.narration import load_project
 from pipeline.utils import CacheIndex, canonical_json, file_hash, input_hash, write_artifact
-from pipeline.validate import ROOT
+from pipeline.validate import add_workdir_argument
 
 
 def wan_contract(config, shot, keyframe, quality):
@@ -115,19 +115,20 @@ def generate_shots(root, config, pairs, *, ffmpeg="ffmpeg"):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    add_workdir_argument(parser)
     parser.add_argument("--shot", type=int)
     parser.add_argument("--ffmpeg", default="ffmpeg")
     parser.add_argument("--export-wan", type=Path, metavar="DIRECTORY")
     parser.add_argument("--quality", choices=("draft", "final"), default="draft")
     args = parser.parse_args()
     try:
-        config, storyboard = load_project(ROOT)
-        pairs = shot_inputs(ROOT, config, storyboard, args.shot)
+        config, storyboard = load_project(args.workdir)
+        pairs = shot_inputs(args.workdir, config, storyboard, args.shot)
         if args.export_wan is not None:
             export_wan_bundle(args.export_wan, config, storyboard, pairs, args.quality)
             print(f"Wan inputs ready at {args.export_wan}")
         else:
-            generate_shots(ROOT, config, pairs, ffmpeg=args.ffmpeg)
+            generate_shots(args.workdir, config, pairs, ffmpeg=args.ffmpeg)
     except (OSError, ValueError, KeyError, yaml.YAMLError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"{error}\n")
 

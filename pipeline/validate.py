@@ -12,6 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schema" / "storyboard.schema.json"
 
 
+def add_workdir_argument(parser):
+    parser.add_argument("--workdir", type=lambda path: Path(path).resolve(), default=ROOT,
+                        help="Job directory containing storyboard inputs and outputs (default: repository root)")
+
+
 def read_json(path):
     def reject_constant(token):
         raise ValueError(f"invalid JSON number {token}")
@@ -48,10 +53,11 @@ def validate_storyboard(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("storyboard", nargs="?", type=Path, default=ROOT / "storyboard.json")
+    add_workdir_argument(parser)
+    parser.add_argument("storyboard", nargs="?", type=Path)
     args = parser.parse_args()
     try:
-        storyboard = validate_storyboard(args.storyboard)
+        storyboard = validate_storyboard(args.storyboard or args.workdir / "storyboard.json")
     except (ValueError, SchemaError) as error:
         parser.exit(1, f"{error}\n")
     print(f"Valid storyboard ({len(storyboard['shots'])} shots)")

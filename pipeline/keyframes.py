@@ -10,7 +10,7 @@ import yaml
 from pipeline.narration import load_project
 from pipeline.providers import cloudflare_image, post_image_form
 from pipeline.utils import CacheIndex, http_status, input_hash, log_run, retry, write_artifact
-from pipeline.validate import ROOT
+from pipeline.validate import ROOT, add_workdir_argument
 
 
 class Keyframes:
@@ -46,7 +46,7 @@ class Keyframes:
             log_run(self.log, **event, status="cache_hit", cache_hit=True)
             return image
 
-        load_dotenv(self.root / ".env")
+        load_dotenv(ROOT / ".env")
         account = os.getenv("CLOUDFLARE_ACCOUNT_ID", "").strip()
         token = os.getenv("CLOUDFLARE_API_TOKEN", "").strip()
         if not account or not token:
@@ -119,16 +119,17 @@ class Keyframes:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    add_workdir_argument(parser)
     commands = parser.add_mutually_exclusive_group()
     commands.add_argument("--reference-options", action="store_true")
     commands.add_argument("--select-reference", type=int, choices=range(1, 5), metavar="N")
     commands.add_argument("--shot", type=int, help="Generate only this shot ID")
     args = parser.parse_args()
     try:
-        config, storyboard = load_project(ROOT)
+        config, storyboard = load_project(args.workdir)
         if "character_reference" not in storyboard:
             raise ValueError("Set character_reference in storyboard.json before running the keyframe stage")
-        keyframes = Keyframes(ROOT, config, storyboard)
+        keyframes = Keyframes(args.workdir, config, storyboard)
         if args.reference_options:
             for option in range(1, 5):
                 print(f"Option {option}: {keyframes.reference_option(option)}")

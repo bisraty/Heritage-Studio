@@ -11,7 +11,7 @@ import yaml
 
 from pipeline.narration import load_project
 from pipeline.utils import CacheIndex, canonical_json, file_hash, input_hash, log_run, write_artifact
-from pipeline.validate import ROOT
+from pipeline.validate import add_workdir_argument
 
 
 def music_contracts(config, storyboard):
@@ -129,24 +129,25 @@ def select_music(root, config, storyboard, option):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    add_workdir_argument(parser)
     choices = parser.add_mutually_exclusive_group()
     choices.add_argument("--export-ace", type=Path, metavar="MANIFEST")
     choices.add_argument("--select", type=int, metavar="NUMBER")
     args = parser.parse_args()
     try:
-        config, storyboard = load_project(ROOT)
+        config, storyboard = load_project(args.workdir)
         if args.export_ace is not None:
             export_music_bundle(args.export_ace, config, storyboard)
             print(f"ACE-Step manifest ready at {args.export_ace}")
         elif args.select is not None:
-            print(f"Selected music: {select_music(ROOT, config, storyboard, args.select)}")
+            print(f"Selected music: {select_music(args.workdir, config, storyboard, args.select)}")
         else:
-            cache = CacheIndex(ROOT / config["paths"]["cache_index"])
+            cache = CacheIndex(args.workdir / config["paths"]["cache_index"])
             for entry in music_contracts(config, storyboard):
                 number = entry["candidate"]
                 path = cache.lookup("music", number, entry["input_hash"])
                 print(f"Candidate {number}: {path or 'awaiting import'}")
-            print(f"Selected music: {selected_music(ROOT, config, storyboard) or 'awaiting selection'}")
+            print(f"Selected music: {selected_music(args.workdir, config, storyboard) or 'awaiting selection'}")
     except (OSError, KeyError, TypeError, ValueError, yaml.YAMLError) as error:
         parser.exit(1, f"{error}\n")
 

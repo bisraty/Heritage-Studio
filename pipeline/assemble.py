@@ -18,7 +18,7 @@ from pipeline.narration import generate_narration, load_project
 from pipeline.radio import PLACEHOLDER_SCORE, prepare_tracks
 from pipeline.shots import generate_shots
 from pipeline.utils import CacheIndex, input_hash, write_artifact
-from pipeline.validate import ROOT
+from pipeline.validate import add_workdir_argument
 
 
 def run_ffmpeg(ffmpeg, work, *args, capture_output=False):
@@ -204,6 +204,7 @@ def assemble(root, config, storyboard, narration, clips, score, *, ffmpeg="ffmpe
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    add_workdir_argument(parser)
     parser.add_argument("--ffmpeg", default="ffmpeg")
     parser.add_argument("--ffprobe", default="ffprobe")
     modes = parser.add_mutually_exclusive_group()
@@ -211,18 +212,19 @@ def main():
     modes.add_argument("--shot", type=int, help="Refresh only this shot's model outputs before assembly")
     args = parser.parse_args()
     try:
-        config, storyboard = load_project(ROOT)
-        keyframes = Keyframes(ROOT, config, storyboard)
-        score = selected_music(ROOT, config, storyboard)
+        workdir = args.workdir
+        config, storyboard = load_project(workdir)
+        keyframes = Keyframes(workdir, config, storyboard)
+        score = selected_music(workdir, config, storyboard)
         if args.shot is not None:
             keyframes.generate(args.shot)
-            generate_narration(ROOT, config, storyboard, shot_id=args.shot)
+            generate_narration(workdir, config, storyboard, shot_id=args.shot)
         cached_only = args.cached_only or args.shot is not None
         frames = keyframes.generate(cached_only=cached_only)
-        narration = generate_narration(ROOT, config, storyboard, cached_only=cached_only)
-        clips = generate_shots(ROOT, config, list(zip(storyboard["shots"], frames, strict=True)), ffmpeg=args.ffmpeg)
+        narration = generate_narration(workdir, config, storyboard, cached_only=cached_only)
+        clips = generate_shots(workdir, config, list(zip(storyboard["shots"], frames, strict=True)), ffmpeg=args.ffmpeg)
         print(f"Score: {score if score is not None else 'temporary synthesized score'}")
-        outputs = assemble(ROOT, config, storyboard, narration, clips, score,
+        outputs = assemble(workdir, config, storyboard, narration, clips, score,
                            ffmpeg=args.ffmpeg, ffprobe=args.ffprobe)
     except subprocess.CalledProcessError as error:
         parser.exit(1, f"{error.stderr or error}\n")

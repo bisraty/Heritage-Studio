@@ -1,6 +1,8 @@
 PYTHON ?= python
 FFMPEG ?= ffmpeg
 FFPROBE ?= ffprobe
+WORKDIR ?= $(CURDIR)
+WORKDIR_ARG = --workdir "$(WORKDIR)"
 ifeq ($(OS),Windows_NT)
 VENV_PYTHON := .venv/Scripts/python.exe
 else
@@ -30,52 +32,52 @@ setup: check-tools
 	$(VENV_PYTHON) -m pip install -r requirements.txt
 
 validate:
-	$(VENV_PYTHON) -m pipeline.validate
+	$(VENV_PYTHON) -m pipeline.validate $(WORKDIR_ARG)
 
 smoke:
-	$(VENV_PYTHON) -m pipeline.smoke
+	$(VENV_PYTHON) -m pipeline.smoke $(WORKDIR_ARG)
 
 stage:
 ifeq ($(S),narration)
-	$(VENV_PYTHON) -m pipeline.narration
+	$(VENV_PYTHON) -m pipeline.narration $(WORKDIR_ARG)
 else ifeq ($(S),keyframes)
-	$(VENV_PYTHON) -m pipeline.keyframes
+	$(VENV_PYTHON) -m pipeline.keyframes $(WORKDIR_ARG)
 else ifeq ($(S),shots)
-	$(VENV_PYTHON) -m pipeline.shots --ffmpeg "$(FFMPEG)"
+	$(VENV_PYTHON) -m pipeline.shots $(WORKDIR_ARG) --ffmpeg "$(FFMPEG)"
 else ifeq ($(S),music)
-	$(VENV_PYTHON) -m pipeline.music
+	$(VENV_PYTHON) -m pipeline.music $(WORKDIR_ARG)
 else ifeq ($(S),assemble)
-	$(VENV_PYTHON) -m pipeline.assemble --cached-only --ffmpeg "$(FFMPEG)" --ffprobe "$(FFPROBE)"
+	$(VENV_PYTHON) -m pipeline.assemble $(WORKDIR_ARG) --cached-only --ffmpeg "$(FFMPEG)" --ffprobe "$(FFPROBE)"
 else
 	$(error Supported stages: narration, keyframes, shots, music and assemble)
 endif
 
 narration:
-	$(VENV_PYTHON) -m pipeline.narration
+	$(VENV_PYTHON) -m pipeline.narration $(WORKDIR_ARG)
 
 radio:
-	$(VENV_PYTHON) -m pipeline.radio --ffmpeg "$(FFMPEG)"
+	$(VENV_PYTHON) -m pipeline.radio $(WORKDIR_ARG) --ffmpeg "$(FFMPEG)"
 
 keyframes:
-	$(VENV_PYTHON) -m pipeline.keyframes
+	$(VENV_PYTHON) -m pipeline.keyframes $(WORKDIR_ARG)
 
 references:
-	$(VENV_PYTHON) -m pipeline.keyframes --reference-options
+	$(VENV_PYTHON) -m pipeline.keyframes $(WORKDIR_ARG) --reference-options
 
 reference:
-	$(VENV_PYTHON) -m pipeline.keyframes --select-reference "$(N)"
+	$(VENV_PYTHON) -m pipeline.keyframes $(WORKDIR_ARG) --select-reference "$(N)"
 
 shots:
-	$(VENV_PYTHON) -m pipeline.shots --ffmpeg "$(FFMPEG)"
+	$(VENV_PYTHON) -m pipeline.shots $(WORKDIR_ARG) --ffmpeg "$(FFMPEG)"
 
 music:
-	$(VENV_PYTHON) -m pipeline.music
+	$(VENV_PYTHON) -m pipeline.music $(WORKDIR_ARG)
 
 film:
-	$(VENV_PYTHON) -m pipeline.assemble --ffmpeg "$(FFMPEG)" --ffprobe "$(FFPROBE)"
+	$(VENV_PYTHON) -m pipeline.assemble $(WORKDIR_ARG) --ffmpeg "$(FFMPEG)" --ffprobe "$(FFPROBE)"
 
 shot:
-	$(VENV_PYTHON) -m pipeline.assemble --shot "$(ID)" --ffmpeg "$(FFMPEG)" --ffprobe "$(FFPROBE)"
+	$(VENV_PYTHON) -m pipeline.assemble $(WORKDIR_ARG) --shot "$(ID)" --ffmpeg "$(FFMPEG)" --ffprobe "$(FFPROBE)"
 
 check-tools:
 	$(PYTHON) --version

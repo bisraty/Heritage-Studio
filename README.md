@@ -20,6 +20,8 @@ The film command uses the approved `references/golden.jpg` and credentials in `.
 
 On Windows without GNU Make, run `\.venv\Scripts\python.exe -m pipeline.assemble`. Use `--cached-only` to assemble from existing narration and keyframes, or `--shot 5` to refresh shot 5 and rebuild the exports using the other shots' cached inputs.
 
+For a separate job directory, put its `storyboard.json` and approved `references/golden.jpg` there, then run `make film WORKDIR=jobs/example` or `python -m pipeline.assemble --workdir jobs/example`. The job owns its references, outputs, cache, and run log. It uses the repository configuration unless it provides its own `config.yaml`. Credentials come from the process environment or the repository's `.env`.
+
 Other commands:
 
 ```bash

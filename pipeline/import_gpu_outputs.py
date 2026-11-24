@@ -14,7 +14,7 @@ from pipeline.narration import load_project
 from pipeline.music import import_music
 from pipeline.shots import shot_inputs, wan_contract
 from pipeline.utils import CacheIndex, file_hash, log_run, write_artifact
-from pipeline.validate import ROOT
+from pipeline.validate import add_workdir_argument
 
 
 def check_clip(path, params, ffprobe):
@@ -82,21 +82,22 @@ def import_wan(root, config, pairs, directory, *, ffprobe="ffprobe"):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    add_workdir_argument(parser)
     parser.add_argument("directory", type=Path, help="Downloaded media files and JSON sidecars")
     parser.add_argument("--stage", choices=("shots", "music"), default="shots")
     parser.add_argument("--shot", type=int, help="Read the current keyframe for one shot only")
     parser.add_argument("--ffprobe", default="ffprobe")
     args = parser.parse_args()
     try:
-        config, storyboard = load_project(ROOT)
+        config, storyboard = load_project(args.workdir)
         if args.stage == "music":
             if args.shot is not None:
                 parser.error("--shot applies to Wan clips")
-            tracks = import_music(ROOT, config, storyboard, args.directory, ffprobe=args.ffprobe)
+            tracks = import_music(args.workdir, config, storyboard, args.directory, ffprobe=args.ffprobe)
             print(f"Verified {len(tracks)} ACE-Step candidate(s)")
         else:
-            pairs = shot_inputs(ROOT, config, storyboard, args.shot)
-            clips = import_wan(ROOT, config, pairs, args.directory, ffprobe=args.ffprobe)
+            pairs = shot_inputs(args.workdir, config, storyboard, args.shot)
+            clips = import_wan(args.workdir, config, pairs, args.directory, ffprobe=args.ffprobe)
             print(f"Verified {len(clips)} Wan clip(s)")
     except (OSError, ValueError, KeyError, TypeError, yaml.YAMLError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"{error}\n")

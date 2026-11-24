@@ -12,7 +12,7 @@ import yaml
 
 from pipeline.narration import generate_narration, load_project, narration_pcm
 from pipeline.utils import CacheIndex, input_hash
-from pipeline.validate import ROOT
+from pipeline.validate import add_workdir_argument
 
 
 SAMPLE_RATE = 24000
@@ -106,12 +106,13 @@ def render_radio(root, config, storyboard, artifacts, *, ffmpeg="ffmpeg"):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    add_workdir_argument(parser)
     parser.add_argument("--ffmpeg", default="ffmpeg", help="FFmpeg executable")
     args = parser.parse_args()
     try:
-        config, storyboard = load_project(ROOT)
-        artifacts = generate_narration(ROOT, config, storyboard)
-        output = render_radio(ROOT, config, storyboard, artifacts, ffmpeg=args.ffmpeg)
+        config, storyboard = load_project(args.workdir)
+        artifacts = generate_narration(args.workdir, config, storyboard)
+        output = render_radio(args.workdir, config, storyboard, artifacts, ffmpeg=args.ffmpeg)
     except (ValueError, OSError, KeyError, yaml.YAMLError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"{error}\n")
     print(f"Radio cut ready at {output}")

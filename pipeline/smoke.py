@@ -1,5 +1,6 @@
 """Check text, speech, and image generation once each using synthetic inputs."""
 
+import argparse
 import os
 import sys
 from time import perf_counter
@@ -8,11 +9,12 @@ from urllib.error import URLError
 from dotenv import load_dotenv
 import yaml
 
+from pipeline.narration import load_project
 from pipeline.providers import (
     cloudflare_image, gemini_audio, gemini_text, post_json, speech_request,
 )
 from pipeline.utils import http_status, input_hash, log_run
-from pipeline.validate import ROOT, validate_storyboard
+from pipeline.validate import ROOT, add_workdir_argument
 
 
 def run_probe(stage, settings, endpoint, headers, payload, decode, timeout_s, log_path):
@@ -40,13 +42,15 @@ def run_probe(stage, settings, endpoint, headers, payload, decode, timeout_s, lo
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    add_workdir_argument(parser)
+    args = parser.parse_args()
     try:
-        config = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8"))
-        validate_storyboard(ROOT / config["paths"]["storyboard"])
+        config, _ = load_project(args.workdir)
         load_dotenv(ROOT / ".env")
         smoke = config["smoke"]
         providers = config["providers"]
-        log_path = ROOT / config["paths"]["run_log"]
+        log_path = args.workdir / config["paths"]["run_log"]
         gemini = {"x-goog-api-key": os.getenv("GEMINI_API_KEY", "")}
         cloudflare = {
             "Authorization": f"Bearer {os.getenv('CLOUDFLARE_API_TOKEN', '')}",
