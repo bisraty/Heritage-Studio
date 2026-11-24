@@ -71,7 +71,7 @@ def motion_filter(shot, size, frames, fps, zoom):
     )
 
 
-def generate_shots(root, config, pairs, *, ffmpeg="ffmpeg"):
+def generate_shots(root, config, pairs, *, ffmpeg="ffmpeg", prefer_wan=True):
     cache = CacheIndex(root / config["paths"]["cache_index"])
     outputs = root / config["paths"]["outputs"] / "shots"
     fps = config["assembly"]["fps"]
@@ -82,11 +82,12 @@ def generate_shots(root, config, pairs, *, ffmpeg="ffmpeg"):
     for shot, keyframe in pairs:
         shot_id = shot["id"]
         imported = None
-        for quality in ("final", "draft"):
-            contract = wan_contract(config, shot, keyframe, quality)
-            imported = cache.lookup("wan", shot_id, contract["input_hash"])
-            if imported is not None:
-                break
+        if prefer_wan:
+            for quality in ("final", "draft"):
+                contract = wan_contract(config, shot, keyframe, quality)
+                imported = cache.lookup("wan", shot_id, contract["input_hash"])
+                if imported is not None:
+                    break
         if imported is not None:
             print(f"Shot {shot_id}: Wan ({quality})")
             paths.append(imported)

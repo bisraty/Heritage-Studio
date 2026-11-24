@@ -280,6 +280,19 @@ jobs/<job_id>/
 
 Run locally for the demo. Optionally deploy as a Hugging Face Docker Space (free CPU, FFmpeg installed in the image) with secrets set in the Space settings and the rate limits above switched on.
 
+Start the local API from the repository root. Install its dependencies in the same virtual environment as the pipeline, then run Uvicorn on the loopback interface.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r studio/api/requirements.txt
+.\.venv\Scripts\python.exe -m uvicorn studio.api.main:app --host 127.0.0.1 --port 8000
+```
+
+Interactive API docs are at `http://127.0.0.1:8000/docs`. Fetch `GET /api/config` for the current consent wording, privacy notice, and photo limits. Create jobs with multipart fields `story`, `language` (`en` or `am`), `consent`, `privacy_acknowledged` when photos are attached, and repeated `photos` uploads. Storyboard drafting, radio generation, and film generation return HTTP 202. Poll the status endpoint to track progress. Submit `PUT /api/jobs/{id}/storyboard?approve=true` to approve the reviewed storyboard. GET the radio endpoint to play the preview and POST feedback as `{"laughed":"...","confused":"..."}`.
+
+Studio uses illustrated FLUX keyframes, Ken Burns motion, and the placeholder score until a matching ACE-Step track is imported and selected for that job. The API is configured for a single local server process. Expired job folders are removed after 24 hours of inactivity, and downloaded copies stay on the user's device.
+
+For backend tests, install `studio/api/requirements-dev.txt` and run `python -m unittest discover -s studio/api/tests -v` in the project environment.
+
 ### Evidence for the report
 
 I will run one experiment: 3 non-developers try to make a film without my help. I write the result in `EXPERIMENTS.md` myself. Make sure the app records stage timings and failures per job so I have real data. Do not write the results for me.

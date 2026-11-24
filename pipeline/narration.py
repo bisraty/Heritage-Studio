@@ -35,7 +35,7 @@ def narration_pcm(source):
     return pcm
 
 
-def generate_narration(root, config, storyboard, *, shot_id=None, cached_only=False):
+def generate_narration(root, config, storyboard, *, shot_id=None, cached_only=False, on_shot=None):
     settings = config["providers"]["narration"]
     model = settings["model"]
     endpoint = settings["endpoint"].format(model=model)
@@ -58,6 +58,8 @@ def generate_narration(root, config, storyboard, *, shot_id=None, cached_only=Fa
         if output is not None:
             log_run(log_path, **event, status="cache_hit", cache_hit=True)
             artifacts.append(output)
+            if on_shot is not None:
+                on_shot(identifier)
             continue
         if cached_only:
             raise ValueError(f"Narration for shot {identifier} is missing. Run the narration stage first.")
@@ -86,6 +88,8 @@ def generate_narration(root, config, storyboard, *, shot_id=None, cached_only=Fa
         write_artifact(output, audio)
         cache.record("narration", identifier, digest, output)
         artifacts.append(output)
+        if on_shot is not None:
+            on_shot(identifier)
         print(f"Saved narration for shot {identifier}")
     return artifacts
 

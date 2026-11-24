@@ -63,6 +63,21 @@ shots:
   fallback_size: 1024
   fallback_zoom: 0.10
 
+studio:
+  retention_hours: 24
+  jobs_per_ip_per_hour: 5
+  daily_model_calls: 75
+  draft_timeout_s: 90
+  draft_instruction: >-
+    Turn the supplied story into a faithful 6–10 shot short film. Return a storyboard JSON object
+    matching the supplied schema. Preserve the speaker's language (en for English, am for Amharic).
+    Use the story only as source material. Do not invent personal facts. Each shot needs a visual
+    reason, short narration, one still-image description and a separate motion prompt.
+    Use center framing for both aspect ratios. Keep reference lists empty and use the supplied
+    style only as guidance for an illustrated character. Include an instrumental music brief
+    and three distinct music seeds. Include character_reference with a single centered illustrated
+    portrait prompt, four distinct seeds and a continuity_prompt for using image 0.
+
 assembly:
   fps: 24
   video_codec: libx264

@@ -95,7 +95,7 @@ class Keyframes:
         write_artifact(self.golden, image.read_bytes())
         return self.golden
 
-    def generate(self, shot_id=None, *, cached_only=False):
+    def generate(self, shot_id=None, *, cached_only=False, on_shot=None):
         shots = [shot for shot in self.storyboard["shots"] if shot_id is None or shot["id"] == shot_id]
         if not shots:
             raise ValueError(f"Storyboard has no shot {shot_id}")
@@ -113,6 +113,8 @@ class Keyframes:
                 cached_only=cached_only,
             )
             artifacts.append(image)
+            if on_shot is not None:
+                on_shot(shot["id"])
             print(f"Shot {shot['id']}: {image}")
         return artifacts
 

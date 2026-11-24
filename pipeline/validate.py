@@ -28,15 +28,18 @@ def read_json(path):
 
 
 def validate_storyboard(path):
+    return validate_storyboard_data(read_json(path), path)
+
+
+def validate_storyboard_data(storyboard, source="Storyboard"):
     schema = read_json(SCHEMA_PATH)
     Draft202012Validator.check_schema(schema)
-    storyboard = read_json(path)
     errors = [
         f"{error.json_path}: {error.message}"
         for error in Draft202012Validator(schema).iter_errors(storyboard)
     ]
     if errors:
-        raise ValueError(f"{path}:\n" + "\n".join(errors))
+        raise ValueError(f"{source}:\n" + "\n".join(errors))
 
     shot_positions = {}
     for index, shot in enumerate(storyboard["shots"]):
@@ -44,7 +47,7 @@ def validate_storyboard(path):
         if shot_id in shot_positions:
             first = shot_positions[shot_id]
             raise ValueError(
-                f"{path}: $.shots[{index}].id duplicates shot {shot_id} "
+                f"{source}: $.shots[{index}].id duplicates shot {shot_id} "
                 f"at $.shots[{first}].id"
             )
         shot_positions[shot_id] = index

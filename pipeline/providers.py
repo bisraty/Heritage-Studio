@@ -1,6 +1,8 @@
 """HTTP requests and response decoding for the configured model providers."""
 
 from base64 import b64decode
+from contextlib import contextmanager
+from contextvars import ContextVar
 import json
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from uuid import uuid4
@@ -8,6 +10,18 @@ from uuid import uuid4
 
 class ProviderResponseError(ValueError):
     """A provider returned a response without a usable result."""
+
+
+_before_request = ContextVar("before_provider_request", default=None)
+
+
+@contextmanager
+def provider_budget(before_request):
+    token = _before_request.set(before_request)
+    try:
+        yield
+    finally:
+        _before_request.reset(token)
 
 
 class RejectRedirects(HTTPRedirectHandler):
@@ -26,6 +40,9 @@ def post_json(endpoint, headers, payload, timeout_s):
 
 
 def read_response(request, timeout_s):
+    before_request = _before_request.get()
+    if before_request is not None:
+        before_request()
     with build_opener(RejectRedirects()).open(request, timeout=timeout_s) as response:
         return json.load(response)
 
