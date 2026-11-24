@@ -293,6 +293,16 @@ Studio uses illustrated FLUX keyframes, Ken Burns motion, and the placeholder sc
 
 For backend tests, install `studio/api/requirements-dev.txt` and run `python -m unittest discover -s studio/api/tests -v` in the project environment.
 
+With the API running, start the Next.js frontend from the repository root.
+
+```powershell
+cd studio/web
+npm ci
+npm run dev
+```
+
+Open `http://127.0.0.1:3000`. The frontend uses `http://127.0.0.1:8000` for the API. Set `NEXT_PUBLIC_STUDIO_API_URL` in the frontend environment if the API uses a different local address. Preview links point to the local API. Download the MP4 to share a film with someone outside that workspace.
+
 ### Evidence for the report
 
 I will run one experiment: 3 non-developers try to make a film without my help. I write the result in `EXPERIMENTS.md` myself. Make sure the app records stage timings and failures per job so I have real data. Do not write the results for me.

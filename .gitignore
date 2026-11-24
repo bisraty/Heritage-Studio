@@ -6,5 +6,10 @@ __pycache__/
 /jobs/
 /runs.jsonl
 /runs.jsonl.lock
+/studio/web/node_modules/
+/studio/web/.next/
+/studio/web/*.tsbuildinfo
+/studio/web/next-env.d.ts
+/studio/web/.env*
 /outputs/*
 !/outputs/.gitkeep
