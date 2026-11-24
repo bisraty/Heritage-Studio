@@ -1,0 +1,142 @@
+{
+  "title": "Hirna to Addis",
+  "language": "en",
+  "style_prompt": "warm hand-painted storybook illustration, soft film grain, golden-hour light, earthy greens and terracotta, gentle humor, no text in the image",
+  "character_prompt": "adult Ethiopian man from Hirna, with short tightly curled black hair, a neatly trimmed short beard and mustache, dark rectangular glasses, and a plain black T-shirt. Natural adult facial proportions and a warm, relaxed expression.",
+  "character_reference": {
+    "prompt": "A waist-up character turnaround with front, three-quarter and profile views of the same adult. Grounded Ethiopian storybook portraiture, hand-painted gouache, softly modeled natural features, warm brown skin with natural tonal variation, and a muted ochre backdrop inspired by the Hirna highlands. Keep the glasses, black T-shirt and facial features consistent across all three views. No labels.",
+    "seeds": [2001, 2002, 2003, 2004],
+    "continuity_prompt": "Use image 0 as the character and illustration reference. Keep the character's recognizable features and clothing where he appears. Compose the main subject centrally for both vertical and horizontal crops."
+  },
+  "narration_style": "Read warmly and playfully, like a friend telling a story. Light comic timing on the jokes, slower and softer on the last two lines.",
+  "music": {
+    "caption": "warm acoustic instrumental, light Ethiopian-pentatonic feel, gentle percussion, hopeful and playful, no strong lead melody",
+    "instrumental": true,
+    "bpm": 90,
+    "seeds": [3001, 3002, 3003]
+  },
+  "shots": [
+    {
+      "id": 1,
+      "duration_s": 7,
+      "reason": "Place and motif, first laugh",
+      "shot_size": "wide",
+      "image_prompt": "One wide establishing landscape of the green Hirna highlands at sunrise. A small rural house and grassy ridges are the subjects. A thin gold loading ring hangs in the sky like a sun. The entire landscape is empty of people, faces, and figures. One uninterrupted composition.",
+      "motion_prompt": "slow push-in, breeze in grass",
+      "narration": "I was born in Hirna, where the mornings are green and the internet is a rumour.",
+      "music_cue": "Soft and curious",
+      "references": [],
+      "seed": 1001
+    },
+    {
+      "id": 2,
+      "duration_s": 7,
+      "reason": "Sets up the dream",
+      "shot_size": "medium",
+      "image_prompt": "The character as a boy at a window with a borrowed laptop, curious",
+      "motion_prompt": "gentle drift, screen glow flickers",
+      "narration": "I learned to code on a borrowed laptop, one tiny download at a time.",
+      "music_cue": "Soft and curious",
+      "references": [],
+      "seed": 1002
+    },
+    {
+      "id": 3,
+      "duration_s": 7,
+      "reason": "First victory, buffering joke",
+      "on_screen_text": "Hello World",
+      "shot_size": "insert",
+      "image_prompt": "A single continuous scene of one programmer, alone at a wooden desk, smiling at the first program on his borrowed laptop. The camera is just behind his shoulder, with the glowing laptop screen and keyboard filling most of the center. Show one programmer and one laptop, with no duplicate people, portraits, or panels.",
+      "motion_prompt": "slow zoom on screen",
+      "narration": "My first program said Hello World. The page took an hour to load. Worth it.",
+      "music_cue": "Soft and curious",
+      "references": [],
+      "seed": 1003
+    },
+    {
+      "id": 4,
+      "duration_s": 7,
+      "reason": "Emotional hook for the ending",
+      "shot_size": "medium close-up",
+      "image_prompt": "Extreme close-up of two pairs of hands passing a packed cloth bag across a wooden table in a warm Hirna home. The bag and hands fill the center. Frame only from wrist level down. Every head, face, and torso is entirely outside the frame.",
+      "motion_prompt": "slow push-in",
+      "narration": "My mother packed one bag and said, 'Go. Call me when you arrive.'",
+      "music_cue": "Soft and curious, with a lift at the goodbye",
+      "references": [],
+      "seed": 1004
+    },
+    {
+      "id": 5,
+      "duration_s": 7,
+      "reason": "Bus joke",
+      "shot_size": "wide",
+      "image_prompt": "Crowded bus on a winding road, laptop on his knees, bags piled on the roof, loading circle on the window",
+      "motion_prompt": "slow pan along the road, gentle sway",
+      "narration": "The bus to Addis took all day. My laptop rode on my knees. My dreams rode on the roof.",
+      "music_cue": "Brighter and playful",
+      "references": [],
+      "seed": 1005
+    },
+    {
+      "id": 6,
+      "duration_s": 7,
+      "reason": "Traffic joke, scale",
+      "shot_size": "wide",
+      "image_prompt": "Addis Ababa traffic and tall buildings, the character tiny and wide-eyed, loading circle floating over the jam",
+      "motion_prompt": "slow tilt up",
+      "narration": "Addis was loud, fast, and full of better developers. I got lost twice. Once on the map.",
+      "music_cue": "Brighter and playful",
+      "references": [],
+      "seed": 1006
+    },
+    {
+      "id": 7,
+      "duration_s": 7,
+      "reason": "Persistence",
+      "shot_size": "medium",
+      "image_prompt": "One scene of a single developer working alone at a desk late at night, seated in three-quarter view. Warm desk lamp, many coffee cups and cool screen glow. Center the developer in one uninterrupted composition, with no duplicates or panels.",
+      "motion_prompt": "locked off, subtle light change",
+      "narration": "So I coded at night, broke things in the morning, and fixed them by lunch. Repeat.",
+      "music_cue": "Brighter and steady",
+      "references": [],
+      "seed": 1007
+    },
+    {
+      "id": 8,
+      "duration_s": 7,
+      "reason": "The payoff",
+      "on_screen_text": "EatSmart",
+      "shot_size": "medium close-up",
+      "image_prompt": "One centered portrait of a single confident developer holding a phone with a blank screen toward the viewer. Warm daylight and a calm, simple background. One person, one continuous frame.",
+      "motion_prompt": "slow push-in",
+      "narration": "Years later, I founded and built EatSmart. It even helped me lose weight.",
+      "music_cue": "Brighter and hopeful",
+      "references": [],
+      "seed": 1008
+    },
+    {
+      "id": 9,
+      "duration_s": 7,
+      "reason": "Heartfelt ending, callback",
+      "shot_size": "medium",
+      "image_prompt": "A single continuous portrait of one man, alone, gently smiling as he holds a phone to his ear. Center him in a quiet Addis Ababa room at golden hour. One character, one frame. The person on the other end of the call is entirely offscreen.",
+      "motion_prompt": "slow push-in",
+      "narration": "Then I finally called her. 'Mother, I arrived.' If a boy from Hirna can, so can you.",
+      "music_cue": "Warm resolution",
+      "references": [],
+      "seed": 1009
+    },
+    {
+      "id": 10,
+      "duration_s": 7,
+      "reason": "Closing joke, then \"Made with AI\"",
+      "shot_size": "close-up",
+      "image_prompt": "One continuous close-up of one developer grinning as he looks down at a laptop. The laptop screen shows a small circular buffering ring. Place the face and laptop near the center of the same scene, with no duplicate figures or panels.",
+      "motion_prompt": "very slow pull-out",
+      "narration": "Now, if you'll excuse me, my page is still loading.",
+      "music_cue": "Playful stop",
+      "references": [],
+      "seed": 1010
+    }
+  ]
+}
