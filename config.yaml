@@ -68,6 +68,16 @@ studio:
   jobs_per_ip_per_hour: 5
   daily_model_calls: 75
   draft_timeout_s: 90
+  draft_fallback_model: gemini-3.1-flash-lite
+  local_draft:
+    style: Warm hand-painted storybook illustration, gentle film grain, no text in the image.
+    character: Illustrate the story’s narrator. Keep the same appearance throughout.
+    character_reference: A single centered illustrated portrait of the narrator, plain background, no labels.
+    continuity: Use image 0 as the character reference when the narrator appears. One continuous scene, center framing.
+    narration_style: Read naturally and warmly, with a short pause at each sentence.
+    image_direction: Illustrate one moment from this story excerpt. Keep text offscreen.
+    motion: [slow push-in, gentle drift, locked off]
+    score_caption: Warm, unobtrusive acoustic instrumental with gentle percussion and no strong lead melody.
   draft_instruction: >-
     Turn the supplied story into a faithful 6–10 shot short film. Return a storyboard JSON object
     matching the supplied schema. Preserve the speaker's language (en for English, am for Amharic).

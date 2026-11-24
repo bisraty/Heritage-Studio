@@ -396,6 +396,8 @@ export default function Studio() {
 
       {screen === "storyboard" && <section>
         {heading("Storyboard Review", "Review each scene, edit the narration, and see why the scene is in your film.")}
+        {status?.draft_source === "local" && status.state === "storyboard_drafted" &&
+          <p className="banner" role="status">Gemini was busy. This local draft uses excerpts from your story. Review the narration before approving.</p>}
         {busy && !storyboard && <Loading>Drafting your storyboard…</Loading>}
         {!busy && !storyboard && <button className="button primary" onClick={() => retry("draft")}>Draft Storyboard</button>}
         {storyboard && <>

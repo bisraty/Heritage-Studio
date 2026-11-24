@@ -5,6 +5,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
+from urllib.error import HTTPError
 
 from fastapi.testclient import TestClient
 from PIL import Image
@@ -99,3 +100,35 @@ class StudioApiTests(unittest.TestCase):
         status = self.client.get(f"{path}/status").json()
         self.assertEqual(status["state"], "failed")
         self.assertIn("daily model-call limit", status["error"])
+
+    def test_draft_switches_models_after_provider_unavailable(self):
+        identifier = self.create_job()
+        path = f"/api/jobs/{identifier}"
+        unavailable = HTTPError("https://example.test", 503, "Unavailable", {}, None)
+        reply = {"candidates": [{"content": {"parts": [{"text": json.dumps(self.storyboard)}]}}]}
+        with patch.dict("os.environ", {"GEMINI_API_KEY": "fixture"}), patch(
+            "studio.api.workflow.post_json", side_effect=[unavailable, reply],
+        ) as request, patch("pipeline.utils.time.sleep"):
+            self.assertEqual(self.client.post(f"{path}/storyboard/draft").status_code, 202)
+        self.assertEqual(self.client.get(f"{path}/status").json()["state"], "storyboard_drafted")
+        self.assertEqual(request.call_count, 2)
+        models = [self.config["providers"]["script"]["model"], self.config["studio"]["draft_fallback_model"]]
+        for call, model in zip(request.call_args_list, models, strict=True):
+            self.assertIn(f"/models/{model}:generateContent", call.args[0])
+        entries = (self.root / identifier / "runs.jsonl").read_text(encoding="utf-8").splitlines()
+        self.assertEqual([json.loads(line)["model"] for line in entries], models)
+
+    def test_unavailable_models_leave_an_editable_local_draft(self):
+        story = "One family saved letters and photographs. Years later they made a film about the memories."
+        identifier = self.create_job(story=story)
+        path = f"/api/jobs/{identifier}"
+        unavailable = HTTPError("https://example.test", 503, "Unavailable", {}, None)
+        with patch.dict("os.environ", {"GEMINI_API_KEY": "fixture"}), patch(
+            "studio.api.workflow.post_json", side_effect=unavailable,
+        ) as request, patch("pipeline.utils.time.sleep"):
+            self.assertEqual(self.client.post(f"{path}/storyboard/draft").status_code, 202)
+        self.assertEqual(request.call_count, 3)
+        self.assertEqual(self.client.get(f"{path}/status").json()["draft_source"], "local")
+        storyboard = self.client.get(f"{path}/storyboard").json()
+        self.assertEqual(" ".join(shot["narration"] for shot in storyboard["shots"]), story)
+        self.assertEqual(self.client.put(f"{path}/storyboard?approve=true", json=storyboard).status_code, 200)

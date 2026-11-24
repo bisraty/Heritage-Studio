@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 from time import perf_counter
 
 from dotenv import load_dotenv
@@ -14,7 +15,7 @@ from pipeline.narration import generate_narration
 from pipeline.providers import gemini_text, post_json, provider_budget
 from pipeline.radio import render_radio
 from pipeline.shots import generate_shots
-from pipeline.utils import input_hash, log_run, retry, write_artifact
+from pipeline.utils import http_status, input_hash, log_run, retry, write_artifact
 from pipeline.validate import ROOT, SCHEMA_PATH, validate_storyboard_data
 from studio.api.jobs import read_json, save_json
 
@@ -44,7 +45,7 @@ def validate_job_storyboard(job, storyboard, *, draft=False):
 def draft_storyboard(job, config):
     settings = config["providers"]["script"]
     model = settings["model"]
-    endpoint = settings["endpoint"].format(model=model)
+    fallback = config["studio"].get("draft_fallback_model")
     load_dotenv(ROOT / ".env")
     key = os.getenv("GEMINI_API_KEY", "").strip()
     if not key:
@@ -57,22 +58,79 @@ def draft_storyboard(job, config):
         }, ensure_ascii=False)}]}],
         "generationConfig": {"responseMimeType": "application/json"},
     }
-    digest = input_hash({"model": model, "payload": payload})
-    event = dict(stage="script", shot_id=None, model=model, params={}, seed=None, digest=digest)
     log = job / config["paths"]["run_log"]
 
     def request():
+        nonlocal model
+        endpoint = settings["endpoint"].format(model=model)
+        digest = input_hash({"model": model, "payload": payload})
+        event = dict(stage="script", shot_id=None, model=model, params={}, seed=None, digest=digest)
         started = perf_counter()
         try:
             response = post_json(endpoint, {"x-goog-api-key": key}, payload, config["studio"]["draft_timeout_s"])
             storyboard = validate_job_storyboard(job, json.loads(gemini_text(response)), draft=True)
         except Exception as error:
             log_run(log, **event, status="failed", latency_s=perf_counter() - started, error=error)
+            if http_status(error) == 503 and fallback:
+                model = fallback
             raise
         log_run(log, **event, status="ok", latency_s=perf_counter() - started)
         return storyboard
 
     return retry(request, max_attempts=config["retry"]["max_attempts"])
+
+
+def local_draft(job, config):
+    """Build an editable storyboard from verbatim, ordered excerpts."""
+    source = read_json(job / "input.json")
+    words = source["story"].split()
+    if len(words) < 6:
+        raise ValueError("Add at least six words to create a local draft")
+    settings = config["studio"]["local_draft"]
+    count = min(10, max(6, (len(words) + 21) // 22))
+    text = " ".join(words)
+    boundaries = [0]
+    for match in re.finditer(r"[.!?።፧]+[\"'”’)]*(?=\s)", text):
+        position = text[:match.end()].count(" ") + 1
+        boundaries.append(position)
+    boundaries.append(len(words))
+    shots = []
+    for index in range(count):
+        start = index * len(words) // count
+        end = (index + 1) * len(words) // count
+        # Use sentence boundaries when they are close to an even-length cut.
+        if index:
+            start = last_end
+        if index + 1 < count:
+            usable = [cut for cut in boundaries if start < cut <= len(words) - (count - index - 1)]
+            near = min(usable, key=lambda cut: abs(cut - end), default=end)
+            if abs(near - end) <= 4:
+                end = near
+        end = max(start + 1, end)
+        last_end = end
+        excerpt = " ".join(words[start:min(end, start + 22) if len(words) > 220 else end])
+        shots.append({
+            "id": index + 1, "duration_s": 7, "shot_size": "medium",
+            "reason": ("Introduces the story." if index == 0 else
+                       "Closes the story." if index == count - 1 else "Carries the story into its next moment."),
+            "image_prompt": f"{settings['image_direction']} {excerpt}",
+            "motion_prompt": settings["motion"][index % len(settings["motion"])],
+            "narration": excerpt, "music_cue": "Keep the score soft beneath the narration.",
+            "references": [], "seed": 1001 + index,
+        })
+    storyboard = {
+        "title": " ".join(words[:6]).rstrip(",.;:!?።፧"),
+        "language": source["language"], "style_prompt": settings["style"],
+        "character_prompt": settings["character"], "narration_style": settings["narration_style"],
+        "character_reference": {
+            "prompt": settings["character_reference"], "continuity_prompt": settings["continuity"],
+            "seeds": [2001, 2002, 2003, 2004],
+        },
+        "music": {"caption": settings["score_caption"], "instrumental": True,
+                  "bpm": 90, "seeds": [3001, 3002, 3003]},
+        "shots": shots,
+    }
+    return validate_job_storyboard(job, storyboard, draft=True)
 
 
 def make_reference(keyframes, job, storyboard):
@@ -108,10 +166,18 @@ def run_job(store, job, config, action):
         store.require_consent(job)
         with provider_budget(charge):
             if action == "draft":
-                storyboard = draft_storyboard(job, config)
+                source = "gemini"
+                try:
+                    storyboard = draft_storyboard(job, config)
+                except Exception as error:
+                    if http_status(error) != 503:
+                        raise
+                    storyboard = local_draft(job, config)
+                    source = "local"
                 save_json(job / "storyboard.json", storyboard)
                 timings = {**store.status(job)["timings_s"], "draft": perf_counter() - started}
-                store.update(job, state="storyboard_drafted", busy=False, current_stage=None, timings_s=timings)
+                store.update(job, state="storyboard_drafted", busy=False, current_stage=None,
+                             timings_s=timings, draft_source=source)
                 return
             storyboard = validate_job_storyboard(job, read_json(job / "storyboard.json"))
             progress("narration", "running")
@@ -143,8 +209,12 @@ def run_job(store, job, config, action):
     except Exception as error:
         status = store.status(job)
         stage = status["current_stage"]
-        message = ("Studio has reached its daily model-call limit. Try again tomorrow."
-                   if exhausted else f"The {stage or action} stage could not finish ({type(error).__name__}). Retry the stage.")
+        if exhausted:
+            message = "Studio has reached its daily model-call limit. Try again tomorrow."
+        elif action == "draft" and http_status(error) == 503:
+            message = "Gemini is busy. Your story is saved. Try drafting again in a few minutes."
+        else:
+            message = f"The {stage or action} stage could not finish ({type(error).__name__}). Retry the stage."
         if stage in status["stages"]:
             status["stages"][stage] = "failed"
         timings = {**status["timings_s"], stage or action: perf_counter() - stage_started.get(stage, started)}

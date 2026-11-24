@@ -42,6 +42,7 @@ export interface JobStatus {
   downloads?: Record<string, string> | null;
   ai_label?: string;
   score?: "imported" | "placeholder";
+  draft_source?: "gemini" | "local";
 }
 
 export class ApiError extends Error {
