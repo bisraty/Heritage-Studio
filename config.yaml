@@ -1,0 +1,87 @@
+paths:
+  storyboard: storyboard.json
+  schema: schema/storyboard.schema.json
+  outputs: outputs
+  cache_index: outputs/cache_index.json
+  run_log: runs.jsonl
+
+retry:
+  max_attempts: 3
+
+providers:
+  script:
+    provider: gemini
+    model: gemini-3.5-flash-lite
+    endpoint: https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
+  narration:
+    provider: gemini
+    model: gemini-3.8-flash-lite-tts
+    endpoint: https://generativelanguage.googleapis.com/v1beta/interactions
+    voice: Kore
+    timeout_s: 60
+  keyframes:
+    provider: cloudflare_workers_ai
+    model: "@cf/black-forest-labs/flux-2-klein-4b"
+    endpoint: https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/{model}
+    timeout_s: 60
+  shots:
+    provider: kaggle
+    model: Wan-AI/Wan2.2-TI2V-5B-Diffusers
+    draft_height: 480
+    final_height: 720
+    fallback: ken_burns
+    num_frames: 81
+    num_inference_steps: 30
+    guidance_scale: 5
+  music:
+    provider: notebook
+    model: acestep-v15-turbo
+    candidates: 3
+    duration_s: 90
+    inference_steps: 8
+
+smoke:
+  timeout_s: 60
+  script_prompt: Reply with the words "Studio ready".
+  narration_text: The studio is ready.
+  keyframe_prompt: A hand-painted illustration of a yellow cup on a wooden table.
+  keyframe_steps: 4
+  keyframe_model: "@cf/black-forest-labs/flux-1-schnell"
+
+keyframes:
+  width: 1024
+  height: 1024
+  reference_size: 480
+  golden_reference: references/golden.jpg
+
+radio:
+  width: 720
+  height: 1280
+  music_gain: 0.025
+
+shots:
+  fallback_size: 1024
+  fallback_zoom: 0.10
+
+assembly:
+  fps: 24
+  video_codec: libx264
+  audio_codec: aac
+  narration_padding_s: 0.5
+  clip_trim_s: 0.5
+  narration_lufs: -19
+  music_lufs: -23
+  loudness_range_lu: 7
+  loudness_lufs: -14
+  true_peak_dbtp: -1
+  ducking:
+    threshold: 0.02
+    ratio: 6
+    attack_ms: 300
+    release_ms: 1500
+  end_card:
+    text: Made with AI
+    duration_s: 2.5
+  exports:
+    vertical: {width: 1080, height: 1920}
+    horizontal: {width: 1920, height: 1080}
