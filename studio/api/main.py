@@ -131,7 +131,7 @@ def create_app(jobs_dir=None, config=None):
                 status.update(approved=False, radio=None, downloads=None)
             elif action == "radio":
                 status.update(downloads=None)
-            status.update(busy=True, current_stage=action, state="generating", error=None)
+            status.update(busy=True, action=action, current_stage=action, state="generating", error=None)
             store.save_status(job, status)
         tasks.add_task(run_job, store, job, config, action)
         return {"job_id": identifier.hex, "state": "generating", "current_stage": action}
@@ -210,6 +210,12 @@ def create_app(jobs_dir=None, config=None):
         name = "captions.srt" if kind == "srt" else f"{kind}.mp4"
         media_type = "application/x-subrip" if kind == "srt" else "video/mp4"
         return release(job, (status.get("downloads") or {}).get(name), media_type, name)
+
+    @api.get("/api/jobs/{job_id}/preview/{kind}")
+    def preview(job_id: UUID, kind: Literal["vertical", "horizontal"]):
+        job = store.job(job_id)
+        downloads = store.status(job).get("downloads") or {}
+        return release(job, downloads.get(f"{kind}.mp4"), "video/mp4")
 
     return api
 
