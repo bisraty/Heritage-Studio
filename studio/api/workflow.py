@@ -20,7 +20,42 @@ from pipeline.validate import ROOT, SCHEMA_PATH, validate_storyboard_data
 from studio.api.jobs import read_json, save_json
 
 
+class InvalidDraftReply(ValueError):
+    """A provider response failed the storyboard contract."""
+
+
+class StoryTooShort(ValueError):
+    """The story needs more words for a local storyboard."""
+
+
+def draft_response_schema(language):
+    schema = read_json(SCHEMA_PATH)
+
+    def project(node):
+        if "$ref" in node:
+            return project(schema["$defs"][node["$ref"].split("/")[-1]])
+        result = {key: node[key] for key in ("type", "required", "enum", "minItems", "maxItems", "additionalProperties")
+                  if key in node}
+        if "properties" in node:
+            result["properties"] = {key: project(value) for key, value in node["properties"].items()}
+        if "items" in node:
+            result["items"] = project(node["items"])
+        return result
+
+    result = project(schema)
+    result["required"].append("character_reference")
+    result["properties"]["shots"].update(minItems=6, maxItems=10)
+    result["properties"]["shots"]["items"]["properties"]["references"]["maxItems"] = 0
+    result["properties"]["language"]["enum"] = [language]
+    return result
+
+
 def validate_job_storyboard(job, storyboard, *, draft=False):
+    if draft and isinstance(storyboard, dict) and isinstance(storyboard.get("shots"), list):
+        for shot in storyboard["shots"]:
+            if isinstance(shot, dict) and isinstance(shot.get("on_screen_text"), str):
+                if not shot["on_screen_text"].strip():
+                    del shot["on_screen_text"]
     validate_storyboard_data(storyboard)
     if not 6 <= len(storyboard["shots"]) <= 10:
         raise ValueError("A Studio storyboard must have 6–10 shots")
@@ -54,9 +89,10 @@ def draft_storyboard(job, config):
     payload = {
         "systemInstruction": {"parts": [{"text": config["studio"]["draft_instruction"]}]},
         "contents": [{"parts": [{"text": json.dumps({
-            "story": source["story"], "language": source["language"], "schema": read_json(SCHEMA_PATH),
+            "story": source["story"], "language": source["language"],
         }, ensure_ascii=False)}]}],
-        "generationConfig": {"responseMimeType": "application/json"},
+        "generationConfig": {"responseMimeType": "application/json",
+                             "responseJsonSchema": draft_response_schema(source["language"])},
     }
     log = job / config["paths"]["run_log"]
 
@@ -68,7 +104,10 @@ def draft_storyboard(job, config):
         started = perf_counter()
         try:
             response = post_json(endpoint, {"x-goog-api-key": key}, payload, config["studio"]["draft_timeout_s"])
-            storyboard = validate_job_storyboard(job, json.loads(gemini_text(response)), draft=True)
+            try:
+                storyboard = validate_job_storyboard(job, json.loads(gemini_text(response)), draft=True)
+            except (ValueError, TypeError, AttributeError) as error:
+                raise InvalidDraftReply("Gemini returned an invalid storyboard") from error
         except Exception as error:
             log_run(log, **event, status="failed", latency_s=perf_counter() - started, error=error)
             if http_status(error) == 503 and fallback:
@@ -85,7 +124,7 @@ def local_draft(job, config):
     source = read_json(job / "input.json")
     words = source["story"].split()
     if len(words) < 6:
-        raise ValueError("Add at least six words to create a local draft")
+        raise StoryTooShort("Add at least six words to create a local draft")
     settings = config["studio"]["local_draft"]
     count = min(10, max(6, (len(words) + 21) // 22))
     text = " ".join(words)
@@ -170,7 +209,7 @@ def run_job(store, job, config, action):
                 try:
                     storyboard = draft_storyboard(job, config)
                 except Exception as error:
-                    if http_status(error) != 503:
+                    if http_status(error) != 503 and not isinstance(error, InvalidDraftReply):
                         raise
                     storyboard = local_draft(job, config)
                     source = "local"
@@ -211,6 +250,8 @@ def run_job(store, job, config, action):
         stage = status["current_stage"]
         if exhausted:
             message = "Studio has reached its daily model-call limit. Try again tomorrow."
+        elif isinstance(error, StoryTooShort):
+            message = "The automatic draft is unavailable. Start a new story with at least six words."
         elif action == "draft" and http_status(error) == 503:
             message = "Gemini is busy. Your story is saved. Try drafting again in a few minutes."
         else:

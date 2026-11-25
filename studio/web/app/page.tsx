@@ -94,6 +94,7 @@ export default function Studio() {
   const [screen, setScreen] = useState<Screen>("welcome");
   const [job, setJob] = useState<string | null>(null);
   const [status, setStatus] = useState<JobStatus | null>(null);
+  const [pollVersion, setPollVersion] = useState(0);
   const [config, setConfig] = useState<StudioConfig | null>(null);
   const [storyboard, setStoryboard] = useState<Storyboard | null>(null);
   const [story, setStory] = useState("");
@@ -150,12 +151,15 @@ export default function Studio() {
     if (!job) return;
     const controller = new AbortController();
     let timer: ReturnType<typeof setTimeout>;
+    let failures = 0;
     async function poll() {
       try {
         const next = await request<JobStatus>(jobUrl(job!, "status"), { signal: controller.signal });
         if (controller.signal.aborted) return;
         setConnection("");
         acceptStatus(next);
+        failures = 0;
+        if (!next.busy) return;
       } catch (cause) {
         if (controller.signal.aborted) return;
         if (cause instanceof ApiError && cause.status === 404) {
@@ -168,12 +172,14 @@ export default function Studio() {
           return;
         }
         setConnection(cause instanceof Error ? cause.message : "Waiting for the local API.");
+        failures += 1;
+        if (failures >= 3) return;
       }
       timer = setTimeout(poll, 2500);
     }
     void poll();
     return () => { controller.abort(); clearTimeout(timer); };
-  }, [job]);
+  }, [job, pollVersion]);
 
   const needsStoryboard = Boolean(status?.approved || status?.radio || status?.state === "storyboard_drafted");
   useEffect(() => {
@@ -197,7 +203,8 @@ export default function Studio() {
     const [target, endpoint] = actionTarget[action];
     setScreen(target);
     await request(jobUrl(identifier, endpoint), { method: "POST" });
-    acceptStatus(await request<JobStatus>(jobUrl(identifier, "status")));
+    setStatus((current) => current && ({ ...current, busy: true, action, state: "generating", error: null }));
+    setPollVersion((version) => version + 1);
   }
 
   function addPhotos(newFiles: FileList | null) {
@@ -332,6 +339,7 @@ export default function Studio() {
 
     <main className="shell main-content" id="studio-main" tabIndex={-1} ref={main}>
       {connection && <p className="banner" role="status">{connection}</p>}
+      {connection && job && <button className="button secondary mb-4" onClick={() => setPollVersion((version) => version + 1)}>Refresh Job Status</button>}
       {error && <p className="banner error" role="alert">{error}</p>}
       {status?.error && !error && status.state === "failed" && <p className="banner error" role="alert">{status.error}</p>}
       {notice && <p className="banner" role="status">{notice}</p>}
@@ -397,7 +405,7 @@ export default function Studio() {
       {screen === "storyboard" && <section>
         {heading("Storyboard Review", "Review each scene, edit the narration, and see why the scene is in your film.")}
         {status?.draft_source === "local" && status.state === "storyboard_drafted" &&
-          <p className="banner" role="status">Gemini was busy. This local draft uses excerpts from your story. Review the narration before approving.</p>}
+          <p className="banner" role="status">Studio created a local draft from your story. Review the narration before approving.</p>}
         {busy && !storyboard && <Loading>Drafting your storyboard…</Loading>}
         {!busy && !storyboard && <button className="button primary" onClick={() => retry("draft")}>Draft Storyboard</button>}
         {storyboard && <>

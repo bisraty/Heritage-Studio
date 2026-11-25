@@ -77,7 +77,9 @@ class StudioApiTests(unittest.TestCase):
     def test_background_draft_exposes_status_and_validated_storyboard(self):
         identifier = self.create_job()
         path = f"/api/jobs/{identifier}"
-        reply = {"candidates": [{"content": {"parts": [{"text": json.dumps(self.storyboard)}]}}]}
+        model_draft = deepcopy(self.storyboard)
+        model_draft["shots"][0]["on_screen_text"] = " "
+        reply = {"candidates": [{"content": {"parts": [{"text": json.dumps(model_draft)}]}}]}
         with patch.dict("os.environ", {"GEMINI_API_KEY": "fixture"}), patch(
             "studio.api.workflow.post_json", return_value=reply,
         ) as request:
@@ -132,3 +134,18 @@ class StudioApiTests(unittest.TestCase):
         storyboard = self.client.get(f"{path}/storyboard").json()
         self.assertEqual(" ".join(shot["narration"] for shot in storyboard["shots"]), story)
         self.assertEqual(self.client.put(f"{path}/storyboard?approve=true", json=storyboard).status_code, 200)
+
+    def test_invalid_gemini_reply_uses_local_draft_without_retrying(self):
+        identifier = self.create_job(story="A family saved letters and later shared them around the kitchen table.")
+        path = f"/api/jobs/{identifier}"
+        reply = {"candidates": [{"content": {"parts": [{"text": '{"title":"Missing shots"}'}]}}]}
+        with patch.dict("os.environ", {"GEMINI_API_KEY": "fixture"}), patch(
+            "studio.api.workflow.post_json", return_value=reply,
+        ) as request:
+            self.assertEqual(self.client.post(f"{path}/storyboard/draft").status_code, 202)
+        request.assert_called_once()
+        schema = request.call_args.args[2]["generationConfig"]["responseJsonSchema"]
+        self.assertEqual(schema["properties"]["shots"]["minItems"], 6)
+        self.assertEqual(self.client.get(f"{path}/status").json()["draft_source"], "local")
+        entries = (self.root / identifier / "runs.jsonl").read_text(encoding="utf-8").splitlines()
+        self.assertEqual(json.loads(entries[0])["error"]["type"], "InvalidDraftReply")
