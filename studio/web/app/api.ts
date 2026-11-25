@@ -2,7 +2,8 @@ export const API = (process.env.NEXT_PUBLIC_STUDIO_API_URL || "http://127.0.0.1:
 
 export type Stage = "narration" | "pictures" | "music" | "edit";
 export type Action = "draft" | "radio" | "generate";
-export type Screen = "welcome" | "story" | "storyboard" | "radio" | "progress" | "film";
+export const storageKey = "heritage-studio-current-job";
+export type Screen = "story" | "storyboard" | "radio" | "progress" | "film";
 export type Orientation = "vertical" | "horizontal";
 
 export interface StudioConfig {
