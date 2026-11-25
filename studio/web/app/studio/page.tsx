@@ -4,28 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { MotionConfig, motion } from "motion/react";
 import {
-  AudioLines, Check, Clapperboard, Download, Film, Frame, Images, ListVideo,
-  LoaderCircle, LockKeyhole, Music2, Scissors, Share2, Upload, X,
+  AudioLines, Check, Frame, Images, ListVideo, LoaderCircle, LockKeyhole, Upload, X,
 } from "lucide-react";
 import {
   API, ApiError, jobUrl, jsonBody, request, storageKey,
   type Action, type JobStatus, type Orientation, type Screen, type Storyboard, type StudioConfig,
 } from "../api";
 import { Brand, Footer } from "../chrome";
+import { FinalReview, ProcessingHeading, ProcessingReview, RadioHeading, RadioReview } from "./review-screens";
+import "./review.css";
 
 const screens = [
-  { key: "story", label: "Story Input", Icon: Images },
-  { key: "storyboard", label: "Storyboard", Icon: ListVideo },
-  { key: "radio", label: "Radio Cut", Icon: AudioLines },
-  { key: "progress", label: "Processing", Icon: Clapperboard },
-  { key: "film", label: "Final Film", Icon: Film },
-] as const;
-
-const phaseDetails = [
-  { key: "narration", label: "Narration", Icon: AudioLines },
-  { key: "pictures", label: "Pictures", Icon: Images },
-  { key: "music", label: "Music", Icon: Music2 },
-  { key: "edit", label: "Edit", Icon: Scissors },
+  { key: "story", label: "Story Input" },
+  { key: "storyboard", label: "Storyboard" },
+  { key: "radio", label: "Radio Cut" },
+  { key: "progress", label: "Processing" },
+  { key: "film", label: "Final Film" },
 ] as const;
 
 const actionTarget: Record<Action, [Screen, string]> = {
@@ -84,7 +78,7 @@ export default function Studio() {
   const [connection, setConnection] = useState("");
   const [feedback, setFeedback] = useState({ laughed: "", confused: "" });
   const [feedbackSaved, setFeedbackSaved] = useState(false);
-  const [orientation, setOrientation] = useState<Orientation>("vertical");
+  const [orientation, setOrientation] = useState<Orientation>("horizontal");
   const [notice, setNotice] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
   const restore = useRef(false);
@@ -272,7 +266,7 @@ export default function Studio() {
     setNotice("");
     setFeedback({ laughed: "", confused: "" });
     setFeedbackSaved(false);
-    setOrientation("vertical");
+    setOrientation("horizontal");
     setScreen("story");
   }
 
@@ -291,7 +285,6 @@ export default function Studio() {
   }
 
   const busy = pending || Boolean(status?.busy);
-  const completed = phaseDetails.filter(({ key }) => status?.stages[key] === "done").length;
   const allowed: Record<Screen, boolean> = {
     story: !job, storyboard: Boolean(job), radio: Boolean(status?.approved),
     progress: status?.action === "generate" || status?.state === "done", film: Boolean(status?.downloads),
@@ -303,7 +296,6 @@ export default function Studio() {
     progress: status?.state === "done",
     film: Boolean(status?.downloads),
   };
-  const phaseText: Record<string, string> = { pending: "Waiting", running: "In progress", done: "Complete", failed: "Needs attention" };
 
   return <MotionConfig reducedMotion="user">
     <a href="#studio-main" className="skip-link">Skip to content</a>
@@ -316,23 +308,23 @@ export default function Studio() {
     </header>
 
     <div className="shell workspace">
-      <aside className="workflow panel">
-        <h2>Your film workflow</h2>
+      {!restoring && screen === "progress" && <ProcessingHeading status={status} />}
+      <div className="workflow panel">
         <nav aria-label="Film production steps">
           <ol>
-            {screens.map(({ key, label, Icon }, index) => <li key={key}>
+            {screens.map(({ key, label }) => <li key={key} className={completedSteps[key] ? "complete" : undefined}>
               <button aria-current={screen === key ? "step" : undefined}
                 className={screen === key ? "workflow-step active" : "workflow-step"}
                 disabled={restoring || (!allowed[key] && screen !== key)}
                 onClick={() => { setError(""); setScreen(key); }}>
-                <span className="workflow-icon">{completedSteps[key] && screen !== key ? <Check size={17} /> : <Icon size={17} />}</span>
-                <span><small>Step {index + 1}</small><strong>{label}</strong></span>
+                <span className="workflow-icon" aria-hidden="true">{completedSteps[key] && screen !== key ? <Check size={17} /> : <span className="workflow-dot" />}</span>
+                <strong>{label}</strong>
                 {completedSteps[key] && <span className="sr-only">Complete</span>}
               </button>
             </li>)}
           </ol>
         </nav>
-      </aside>
+      </div>
     <main className="workspace-main" id="studio-main" tabIndex={-1} ref={main}>
       {connection && <p className="banner" role="status">{connection}</p>}
       {connection && job && <button className="button secondary mb-4" onClick={() => setPollVersion((version) => version + 1)}>Refresh Job Status</button>}
@@ -434,80 +426,22 @@ export default function Studio() {
       </section>}
 
       {screen === "radio" && <section>
-        {heading("Radio Cut Preview", "Listen to the narration and timing before generating the pictures.")}
+        <RadioHeading job={job} ready={Boolean(status?.radio)} />
         {busy && !status?.radio && <Loading>Preparing the radio cut…</Loading>}
         {!busy && !status?.radio && <button className="button primary" onClick={() => retry("radio")}>Create Radio Cut</button>}
-        {status?.radio && job && <>
-          <div className="radio-grid">
-            <section className="panel field-panel">
-              <div className="section-title"><AudioLines size={20} /><h2>{storyboard?.title ?? "Narration Preview"}</h2></div>
-              <audio controls preload="metadata" aria-label="Narration preview" src={API + jobUrl(job, "radio")} />
-              {storyboard && <details className="transcript" open>
-                <summary>Transcript</summary>
-                {storyboard.shots.map((shot) => <p key={shot.id}>{shot.narration}</p>)}
-              </details>}
-            </section>
-            <section className="panel field-panel">
-              <div className="section-title"><h2>How did it sound?</h2></div>
-              <label htmlFor="laughed">What made you laugh?</label>
-              <textarea id="laughed" rows={3} maxLength={2000} value={feedback.laughed} onChange={(event) => { setFeedbackSaved(false); setFeedback({ ...feedback, laughed: event.target.value }); }} />
-              <label htmlFor="confused">What confused you?</label>
-              <textarea id="confused" rows={3} maxLength={2000} value={feedback.confused} onChange={(event) => { setFeedbackSaved(false); setFeedback({ ...feedback, confused: event.target.value }); }} />
-              <button className="button secondary" disabled={busy} onClick={() => saveFeedback()}>Save Feedback</button>
-              {feedbackSaved && <p role="status" className="gold">Feedback saved.</p>}
-            </section>
-          </div>
-          <div className="actions footer-actions">
-            <button className="button secondary" onClick={() => setScreen("storyboard")}>Edit Storyboard</button>
-            <button className="button primary" disabled={busy} onClick={() => saveFeedback(true)}><Clapperboard size={18} /> Generate Film</button>
-          </div>
-        </>}
+        {status?.radio && job && <RadioReview
+          job={job} storyboard={storyboard} feedback={feedback} saved={feedbackSaved} busy={busy}
+          setFeedback={(value) => { setFeedbackSaved(false); setFeedback(value); }}
+          edit={() => setScreen("storyboard")} save={() => saveFeedback()} generate={() => saveFeedback(true)} />}
       </section>}
 
-      {screen === "progress" && <section>
-        {heading("Crafting Your Heritage Film", "Watch the four production stages as your film comes together.")}
-        <div className="panel field-panel">
-          <div className="progress-summary"><strong>Film progress</strong><span>{completed} of 4 complete</span></div>
-          <progress aria-label="Film progress" value={completed} max={4} />
-          <ul className="phase-list">
-            {phaseDetails.map(({ key, label, Icon }) => {
-              const state = status?.stages[key] ?? "pending";
-              const count = Object.values(status?.shots ?? {}).filter((shot) => shot[key] === "done").length;
-              return <li key={key}>
-                <span className="phase-icon"><Icon size={20} /></span>
-                <div><strong>{label}</strong>{state === "running" && count > 0 && storyboard && <p>{count} of {storyboard.shots.length} shots</p>}</div>
-                <span className={`phase-status ${state}`}>{phaseText[state]}</span>
-              </li>;
-            })}
-          </ul>
-          <p className="privacy">The film includes a “Made with AI” end card.</p>
-        </div>
-        {!busy && status?.state !== "done" && <div className="actions footer-actions"><button className="button primary" onClick={() => retry("generate")}>Retry Film Generation</button></div>}
-        {status?.downloads && <div className="actions footer-actions"><button className="button primary" onClick={() => setScreen("film")}>Open Film</button></div>}
-      </section>}
+      {screen === "progress" && <ProcessingReview
+        job={job} storyboard={storyboard} status={status} busy={busy}
+        retry={() => retry("generate")} openFilm={() => setScreen("film")} />}
 
-      {screen === "film" && job && status?.downloads && <section>
-        {heading("Your Heritage Film Is Ready", storyboard?.title)}
-        <div className="film-panel panel">
-          <div className="film-toolbar">
-            <div className="actions" aria-label="Video aspect ratio">
-              <button className="button secondary compact" aria-pressed={orientation === "vertical"} onClick={() => setOrientation("vertical")}>Vertical 9:16</button>
-              <button className="button secondary compact" aria-pressed={orientation === "horizontal"} onClick={() => setOrientation("horizontal")}>Landscape 16:9</button>
-            </div>
-            <span className="ai-label">{status.ai_label ?? "Made with AI"}</span>
-          </div>
-          <div className="player-frame">
-            <video key={orientation} controls playsInline preload="metadata" className={orientation}
-              aria-label={`${orientation} film preview`} src={API + jobUrl(job, `preview/${orientation}`)} />
-          </div>
-          <div className="actions film-actions">
-            <a className="button primary" href={API + jobUrl(job, `download/${orientation}`)}><Download size={18} /> Download MP4</a>
-            <a className="button secondary" href={API + jobUrl(job, "download/srt")}>Download Captions</a>
-            <button className="button secondary" onClick={share} disabled={pending}><Share2 size={17} /> Share Preview</button>
-          </div>
-          {status.score === "placeholder" && <p className="privacy">This film uses a temporary synthesized score.</p>}
-        </div>
-      </section>}
+      {screen === "film" && job && status?.downloads && <FinalReview
+        job={job} storyboard={storyboard} status={status} orientation={orientation}
+        setOrientation={setOrientation} pending={pending} share={share} />}
         </motion.div>}
     </main>
     </div>

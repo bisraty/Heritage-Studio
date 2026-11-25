@@ -26,7 +26,22 @@ export interface Shot {
 
 export interface Storyboard {
   title: string;
+  language: "en" | "am";
   shots: Shot[];
+}
+
+export interface CaptionCue {
+  start: number;
+  end: number;
+  text: string;
+}
+
+export interface RadioDetails {
+  peaks: number[];
+  duration: number;
+  sample_rate: number;
+  channels: number;
+  cues: CaptionCue[];
 }
 
 export interface JobStatus {
