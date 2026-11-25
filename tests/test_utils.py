@@ -1,11 +1,13 @@
 from concurrent.futures import ThreadPoolExecutor
 import json
+from io import BytesIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import Mock, call, patch
 from urllib.error import HTTPError, URLError
 
+from pipeline.narration import speech_retry_after
 from pipeline.utils import CacheIndex, input_hash, log_run, retry
 
 
@@ -57,6 +59,23 @@ class CacheTests(unittest.TestCase):
 
 
 class RetryTests(unittest.TestCase):
+    @patch("pipeline.utils.random.uniform", return_value=0)
+    @patch("pipeline.utils.time.sleep")
+    def test_speech_retry_waits_for_gemini_and_stops_on_daily_quota(self, sleep, jitter):
+        def error(detail):
+            body = BytesIO(json.dumps({"error": {"details": [detail]}}).encode())
+            return HTTPError("https://example.test", 429, "quota", {}, body)
+
+        operation = Mock(side_effect=[error({"retryDelay": "42.5s"}), "audio"])
+        self.assertEqual(retry(operation, retry_after=speech_retry_after), "audio")
+        sleep.assert_called_once_with(42.5)
+        daily = error({"violations": [{"quotaId": "RequestsPerDayPerProject"}]})
+        operation = Mock(side_effect=daily)
+        with self.assertRaises(HTTPError):
+            retry(operation, retry_after=speech_retry_after)
+        operation.assert_called_once()
+        self.assertTrue(daily.daily_quota)
+
     @patch("pipeline.utils.random.uniform", return_value=0.5)
     @patch("pipeline.utils.time.sleep")
     def test_transient_failures_back_off(self, sleep, jitter):

@@ -2,9 +2,12 @@
 
 import argparse
 from io import BytesIO
+import json
 import os
 from pathlib import Path
+import re
 from time import perf_counter
+from urllib.error import HTTPError
 import wave
 
 from dotenv import load_dotenv
@@ -13,6 +16,36 @@ import yaml
 from pipeline.providers import gemini_audio, post_json, speech_request
 from pipeline.utils import CacheIndex, http_status, input_hash, log_run, retry, write_artifact
 from pipeline.validate import ROOT, add_workdir_argument, validate_storyboard
+
+
+class NarrationRateLimit(ValueError):
+    def __init__(self, shot_id, daily=False):
+        self.daily = daily
+        super().__init__(f"Gemini speech {'daily quota reached' if daily else 'rate-limited'} at shot {shot_id}.")
+
+
+def speech_retry_after(error):
+    """Use Gemini's short retry hint and stop on a daily quota."""
+    if not isinstance(error, HTTPError) or error.code != 429:
+        return 0
+    delay = 0.0
+    header = error.headers.get("Retry-After", "") if error.headers else ""
+    if re.fullmatch(r"[0-9]{1,8}", header):
+        delay = float(header)
+    try:
+        details = json.loads(error.read()).get("error", {}).get("details", [])
+    except (ValueError, OSError, AttributeError):
+        details = []
+    for detail in details:
+        for violation in detail.get("violations", []):
+            quota = re.sub(r"[^a-z]", "", str(violation.get("quotaId", "")).lower())
+            if "perday" in quota or "daily" in quota:
+                error.daily_quota = True
+                return None
+        hint = detail.get("retryDelay", "")
+        if isinstance(hint, str) and re.fullmatch(r"[0-9]{1,8}(?:\.[0-9]{1,9})?s", hint):
+            delay = max(delay, float(hint[:-1]))
+    return (delay or 60) if delay <= 65 else None
 
 
 def load_project(root):
@@ -79,9 +112,14 @@ def generate_narration(root, config, storyboard, *, shot_id=None, cached_only=Fa
             return audio
 
         try:
-            audio = retry(request_audio, max_attempts=config["retry"]["max_attempts"])
+            audio = retry(request_audio, max_attempts=config["retry"]["max_attempts"],
+                          retry_after=speech_retry_after)
         except Exception as error:
             status = http_status(error)
+            if status == 429:
+                if not hasattr(error, "daily_quota") and isinstance(error, HTTPError):
+                    speech_retry_after(error)
+                raise NarrationRateLimit(identifier, daily=getattr(error, "daily_quota", False)) from None
             detail = f"HTTP {status}" if status else type(error).__name__
             raise ValueError(f"Shot {identifier} narration failed ({detail})") from None
         output = root / config["paths"]["outputs"] / "narration" / f"{identifier}_{digest}.wav"

@@ -11,7 +11,7 @@ from fastapi import HTTPException
 from pipeline.assemble import assemble
 from pipeline.keyframes import Keyframes
 from pipeline.music import selected_music
-from pipeline.narration import generate_narration
+from pipeline.narration import NarrationRateLimit, generate_narration
 from pipeline.providers import gemini_text, post_json, provider_budget
 from pipeline.radio import render_radio
 from pipeline.shots import generate_shots
@@ -250,6 +250,10 @@ def run_job(store, job, config, action):
         stage = status["current_stage"]
         if exhausted:
             message = "Studio has reached its daily model-call limit. Try again tomorrow."
+        elif isinstance(error, NarrationRateLimit):
+            message = ("Gemini speech reached its daily quota. Retry after the quota resets. "
+                       if error.daily else "Gemini speech is rate-limited. Wait a minute, then retry. ")
+            message += "Completed clips are saved."
         elif isinstance(error, StoryTooShort):
             message = "The automatic draft is unavailable. Start a new story with at least six words."
         elif action == "draft" and http_status(error) == 503:

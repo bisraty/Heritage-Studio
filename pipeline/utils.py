@@ -135,7 +135,7 @@ def is_transient(error):
     )
 
 
-def retry(operation, *, max_attempts=3, initial_delay_s=1.0):
+def retry(operation, *, max_attempts=3, initial_delay_s=1.0, retry_after=None):
     """Retry transient failures and raise the last error for the stage fallback."""
     if not 1 <= max_attempts <= 3 or initial_delay_s <= 0:
         raise ValueError("Retry requires 1 to 3 attempts and a positive initial delay")
@@ -145,8 +145,11 @@ def retry(operation, *, max_attempts=3, initial_delay_s=1.0):
         except Exception as error:
             if attempt == max_attempts or not is_transient(error):
                 raise
+            minimum = retry_after(error) if retry_after is not None else 0
+            if minimum is None:
+                raise
             delay = initial_delay_s * 2 ** (attempt - 1)
-            time.sleep(delay + random.uniform(0, delay))
+            time.sleep(max(delay, minimum) + random.uniform(0, delay))
 
 
 def log_run(
