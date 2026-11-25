@@ -3,8 +3,7 @@
 import asyncio
 from contextlib import asynccontextmanager, suppress
 from io import BytesIO
-import json
-from pathlib import Path
+import subprocess
 from typing import Annotated, Literal
 from uuid import UUID
 
@@ -15,9 +14,11 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 from pydantic import BaseModel, Field
 import yaml
 
+from pipeline.keyframes import Keyframes
 from pipeline.utils import locked_file
 from pipeline.validate import ROOT
 from studio.api.jobs import CONSENT, PRIVACY, STAGES, Jobs, read_json, save_json
+from studio.api.media import radio_review
 from studio.api.workflow import run_job, validate_job_storyboard
 
 
@@ -174,17 +175,50 @@ def create_app(jobs_dir=None, config=None):
     def radio(job_id: UUID, tasks: BackgroundTasks):
         return enqueue(job_id, "radio", tasks)
 
-    def release(job, relative, media_type, filename=None):
+    def artifact_path(job, relative):
         if isinstance(relative, str):
             path = (job / relative).resolve()
             if path.is_relative_to(job) and path.is_file():
-                return FileResponse(path, media_type=media_type, filename=filename)
+                return path
         raise HTTPException(404, "This export is not ready")
+
+    def release(job, relative, media_type, filename=None):
+        return FileResponse(artifact_path(job, relative), media_type=media_type, filename=filename)
 
     @api.get("/api/jobs/{job_id}/radio")
     def radio_file(job_id: UUID):
         job = store.job(job_id)
         return release(job, store.status(job).get("radio"), "video/mp4")
+
+    def listening_assets(job_id):
+        job = store.job(job_id)
+        preview = artifact_path(job, store.status(job).get("radio"))
+        try:
+            return radio_review(preview)
+        except (OSError, ValueError, EOFError, subprocess.CalledProcessError):
+            raise HTTPException(503, "Listening details are temporarily unavailable") from None
+
+    @api.get("/api/jobs/{job_id}/radio/details")
+    def radio_details(job_id: UUID):
+        return listening_assets(job_id)[1]
+
+    @api.get("/api/jobs/{job_id}/radio/audio")
+    def radio_audio(job_id: UUID):
+        return FileResponse(listening_assets(job_id)[0], media_type="audio/wav", filename="radio-cut.wav")
+
+    @api.get("/api/jobs/{job_id}/frames/{shot_id}")
+    def shot_frame(job_id: UUID, shot_id: int):
+        job = store.job(job_id)
+        status = store.status(job)
+        if status["shots"].get(str(shot_id), {}).get("pictures") != "done":
+            raise HTTPException(404, "This illustration is not ready")
+        try:
+            storyboard = read_json(job / "storyboard.json")
+            frame, = Keyframes(job, config, storyboard).generate(shot_id, cached_only=True)
+        except (OSError, ValueError, KeyError):
+            raise HTTPException(404, "This illustration is not ready") from None
+        return FileResponse(artifact_path(job, frame.relative_to(job).as_posix()), media_type="image/jpeg",
+                            headers={"Cache-Control": "private, no-cache"})
 
     @api.post("/api/jobs/{job_id}/feedback")
     def feedback(job_id: UUID, notes: Feedback):

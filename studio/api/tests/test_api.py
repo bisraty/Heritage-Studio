@@ -2,6 +2,8 @@ from copy import deepcopy
 from io import BytesIO
 import json
 from pathlib import Path
+from shutil import which
+import subprocess
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
@@ -12,6 +14,7 @@ from PIL import Image
 import yaml
 
 from pipeline.validate import ROOT
+from studio.api.jobs import read_json, save_json
 from studio.api.main import create_app
 
 
@@ -149,3 +152,34 @@ class StudioApiTests(unittest.TestCase):
         self.assertEqual(self.client.get(f"{path}/status").json()["draft_source"], "local")
         entries = (self.root / identifier / "runs.jsonl").read_text(encoding="utf-8").splitlines()
         self.assertEqual(json.loads(entries[0])["error"]["type"], "InvalidDraftReply")
+
+    @unittest.skipUnless(which("ffmpeg"), "FFmpeg is needed to build the test radio cut")
+    def test_existing_radio_cut_exposes_waveform_timed_cues_and_wav(self):
+        identifier = self.create_job()
+        path = f"/api/jobs/{identifier}"
+        job = self.root / identifier
+        relative = "outputs/radio/fixture.mp4"
+        preview = job / relative
+        preview.parent.mkdir(parents=True)
+        captions = preview.parent / "input.srt"
+        captions.write_text("1\n00:00:00,125 --> 00:00:00,750\nA test caption\n", encoding="utf-8")
+        subprocess.run(
+            ["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-f", "lavfi",
+             "-i", "color=black:s=64x64:r=24", "-f", "lavfi", "-i", "sine=f=440:d=1",
+             "-i", str(captions), "-map", "0:v:0", "-map", "1:a:0", "-map", "2:s:0",
+             "-t", "1", "-c:v", "libx264", "-c:a", "aac", "-c:s", "mov_text", str(preview)],
+            capture_output=True, check=True,
+        )
+        status = job / "status.json"
+        save_json(status, {**read_json(status), "radio": relative})
+        response = self.client.get(f"{path}/radio/details")
+        self.assertEqual(response.status_code, 200)
+        details = response.json()
+        self.assertEqual(len(details["peaks"]), 128)
+        self.assertEqual(max(details["peaks"]), 1)
+        self.assertEqual(details["cues"], [{"start": .125, "end": .75, "text": "A test caption"}])
+        track = self.client.get(f"{path}/radio/audio")
+        self.assertEqual(track.status_code, 200)
+        self.assertTrue(track.content.startswith(b"RIFF"))
+        self.assertIn("radio-cut.wav", track.headers["content-disposition"])
+        self.assertEqual(self.client.get(f"{path}/frames/1").status_code, 404)
