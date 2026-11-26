@@ -14,6 +14,18 @@ The log also records three `URLError` entries from the initial smoke run, at 0.0
 
 Each JSONL record includes `ts`, `stage`, `shot_id`, `model`, `params`, `seed`, `input_hash`, `latency_s`, `cost_estimate_usd`, `gpu_minutes`, `status`, `cache_hit`, and `error`. Latency is recorded in seconds. Empty cost and GPU fields indicate missing measurements.
 
+## Recorded provider latency
+
+The [reviewed snapshot](evidence/runs.jsonl) contains 53 successful provider calls, 19 failed attempts, and 207 cache hits. The table includes successful attempts across both smoke tests and production work. It excludes cache hits and retry delays.
+
+| Stage and model | Successful calls | Median | Range |
+| --- | ---: | ---: | ---: |
+| Text · Gemini 3.5 Flash-Lite | 1 | 1.17 s | 1.17 s |
+| Narration · Gemini 3.8 Flash-Lite TTS | 13 | 4.83 s | 3.99–5.95 s |
+| Keyframes · FLUX.1 Schnell | 1 | 3.99 s | 3.99 s |
+| Keyframes · FLUX.2 Klein 4B | 29 | 7.61 s | 3.62–19.12 s |
+| Character references · FLUX.2 Klein 4B | 9 | 10.04 s | 7.93–14.92 s |
+
 ## Pending measurements
 
 | Measurement | Evidence needed |

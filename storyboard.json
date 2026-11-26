@@ -1,10 +1,10 @@
 {
-  "title": "Hirna to Addis",
+  "title": "From Rural Ethiopia to Addis Ababa",
   "language": "en",
   "style_prompt": "warm hand-painted storybook illustration, soft film grain, golden-hour light, earthy greens and terracotta, gentle humor, no text in the image",
-  "character_prompt": "adult Ethiopian man from Hirna, with short tightly curled black hair, a neatly trimmed short beard and mustache, dark rectangular glasses, and a plain black T-shirt. Natural adult facial proportions and a warm, relaxed expression.",
+  "character_prompt": "adult Ethiopian man from rural Ethiopia, with short tightly curled black hair, a neatly trimmed short beard and mustache, dark rectangular glasses, and a plain black T-shirt. Natural adult facial proportions and a warm, relaxed expression.",
   "character_reference": {
-    "prompt": "A waist-up character turnaround with front, three-quarter and profile views of the same adult. Grounded Ethiopian storybook portraiture, hand-painted gouache, softly modeled natural features, warm brown skin with natural tonal variation, and a muted ochre backdrop inspired by the Hirna highlands. Keep the glasses, black T-shirt and facial features consistent across all three views. No labels.",
+    "prompt": "A waist-up character turnaround with front, three-quarter and profile views of the same adult. Grounded Ethiopian storybook portraiture, hand-painted gouache, softly modeled natural features, warm brown skin with natural tonal variation, and a muted ochre backdrop inspired by the rural Ethiopian highlands. Keep the glasses, black T-shirt and facial features consistent across all three views. No labels.",
     "seeds": [2001, 2002, 2003, 2004],
     "continuity_prompt": "Use image 0 as the character and illustration reference. Keep the character's recognizable features and clothing where he appears. Compose the main subject centrally for both vertical and horizontal crops."
   },
@@ -21,9 +21,9 @@
       "duration_s": 7,
       "reason": "Place and motif, first laugh",
       "shot_size": "wide",
-      "image_prompt": "One wide establishing landscape of the green Hirna highlands at sunrise. A small rural house and grassy ridges are the subjects. A thin gold loading ring hangs in the sky like a sun. The entire landscape is empty of people, faces, and figures. One uninterrupted composition.",
+      "image_prompt": "One wide establishing landscape of the green highlands of rural Ethiopia at sunrise. A small rural house and grassy ridges are the subjects. A thin gold loading ring hangs in the sky like a sun. The entire landscape is empty of people, faces, and figures. One uninterrupted composition.",
       "motion_prompt": "slow push-in, breeze in grass",
-      "narration": "I was born in Hirna, where the mornings are green and the internet is a rumour.",
+      "narration": "I was born in the rural countryside of Ethiopia, where the mornings are green and the internet is a rumour.",
       "music_cue": "Soft and curious",
       "references": [],
       "seed": 1001
@@ -58,7 +58,7 @@
       "duration_s": 7,
       "reason": "Emotional hook for the ending",
       "shot_size": "medium close-up",
-      "image_prompt": "Extreme close-up of two pairs of hands passing a packed cloth bag across a wooden table in a warm Hirna home. The bag and hands fill the center. Frame only from wrist level down. Every head, face, and torso is entirely outside the frame.",
+      "image_prompt": "Extreme close-up of two pairs of hands passing a packed cloth bag across a wooden table in a warm rural Ethiopian home. The bag and hands fill the center. Frame only from wrist level down. Every head, face, and torso is entirely outside the frame.",
       "motion_prompt": "slow push-in",
       "narration": "My mother packed one bag and said, 'Go. Call me when you arrive.'",
       "music_cue": "Soft and curious, with a lift at the goodbye",
@@ -121,7 +121,7 @@
       "shot_size": "medium",
       "image_prompt": "A single continuous portrait of one man, alone, gently smiling as he holds a phone to his ear. Center him in a quiet Addis Ababa room at golden hour. One character, one frame. The person on the other end of the call is entirely offscreen.",
       "motion_prompt": "slow push-in",
-      "narration": "Then I finally called her. 'Mother, I arrived.' If a boy from Hirna can, so can you.",
+      "narration": "Then I finally called her. 'Mother, I arrived.' If a boy from rural Ethiopia can, so can you.",
       "music_cue": "Warm resolution",
       "references": [],
       "seed": 1009

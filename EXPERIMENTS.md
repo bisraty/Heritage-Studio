@@ -1,0 +1,15 @@
+# Experiments
+
+## Recovery check
+
+| Hypothesis tested | Change | Observed result |
+| --- | --- | --- |
+| The edited bus prompt is the only reason the current storyboard misses the model cache. | Checked keyframe and narration inputs for each shot independently, then tried the earlier bus prompt with the current shared style and character settings. | All ten narration inputs and nine keyframes matched. The earlier bus prompt matched the remaining cached keyframe. The full entry point resolved the 86.46-second export pair using cached assets. This checks reproducibility and says nothing about picture preference. |
+| A shot-specific narration edit should change one audio input and keep all pictures reusable. | Compared the current storyboard with an in-memory copy using the earlier shot 9 narration. Resolved both using the same cache. | Only shot 9 resolved to a different WAV. The nine other WAV paths and all ten keyframe paths matched. Both lines were already cached, so this test made no live model call. |
+| Matching model assets are sufficient to reproduce the exact current film locally. | Ran assembly in an isolated workdir seeded with the storyboard, approved reference, cached keyframes and narration. Excluded picture clips and final exports. | FFmpeg regenerated ten clips. SHA-256 matched for both MP4s and the SRT against the existing export bundle. |
+
+## Filmmaker notes
+
+Add actual trial results using the columns above, with the shot or version, seed where applicable, and supporting log events. The rubric asks for at least ten logged experiments. Planned trials and repeated cache hits by themselves do not count as results.
+
+The planned Heritage Studio usability experiment with three non-developers is awaiting participant feedback.

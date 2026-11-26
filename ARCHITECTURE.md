@@ -1,6 +1,6 @@
 # Film pipeline architecture
 
-The local Python CLI builds *Hirna to Addis* from [storyboard.json](storyboard.json) and [config.yaml](config.yaml). The storyboard supplies shot order, narration, music and visual prompts, reference paths, and seeds. The configuration supplies model IDs, endpoints, output paths, and render settings. Every CLI stage that consumes the storyboard validates it first. The [schema](schema/storyboard.schema.json) checks the document structure, and the validator detects duplicate shot IDs used by filenames, cache entries, and notebook imports.
+The local Python CLI builds *From Rural Ethiopia to Addis Ababa* from [storyboard.json](storyboard.json) and [config.yaml](config.yaml). The storyboard supplies shot order, narration, music and visual prompts, reference paths, and seeds. The configuration supplies model IDs, endpoints, output paths, and render settings. Every CLI stage that consumes the storyboard validates it first. The [schema](schema/storyboard.schema.json) checks the document structure, and the validator detects duplicate shot IDs used by filenames, cache entries, and notebook imports.
 
 ## Stage flow
 
