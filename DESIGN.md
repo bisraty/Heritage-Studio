@@ -4,7 +4,7 @@ The intended audience is young Ethiopian developers and students outside the big
 
 ## Radio cut test
 
-Pending documented feedback from at least three intended viewers. Record the cut version, date, who watched using aliases if needed, what each person understood or found confusing, and the storyboard changes that followed.
+Awaiting responses from at least three intended viewers. Share the radio cut first and ask each viewer to answer independently: What happened in the story? Which line stuck with you? Where did you lose track or struggle to hear? Record the version, date, and viewer alias. After revising, show viewers the changed passage and record whether it solved the issue.
 
 | Viewer | Feedback | Decision or verified change |
 | --- | --- | --- |
@@ -14,7 +14,9 @@ Pending documented feedback from at least three intended viewers. Record the cut
 
 ## Near-final cut test
 
-Pending documented feedback from at least three intended viewers. Record the cut and aspect ratio each person watched. Ask what moment stayed with them and where the picture, subtitles, narration, or music made the story harder to follow.
+Awaiting responses from at least three intended viewers. Record the cut and aspect ratio each person watched. Ask what moment stayed with them, whether the opening looked like one character or several, whether they could finish reading the first vertical caption, and how the call home landed. Record the specific change and what viewers noticed on replay.
+
+The opening-image and caption questions come from a frame inspection of both exports. The [experiment log](EXPERIMENTS.md) describes what appeared on screen. Audience responses and feedback-driven edits are still pending.
 
 | Viewer | Feedback | Decision or verified change |
 | --- | --- | --- |

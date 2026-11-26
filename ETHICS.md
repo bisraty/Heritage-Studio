@@ -10,6 +10,13 @@ The filmmaker also authorized sending the written character description to Cloud
 
 ## Labelling and licences
 
-The final film includes a “Made with AI” end card.
+The verified local cut includes a “Made with AI” end card. Use the platform's AI disclosure when uploading the film and keep a record of the applied label with the published version.
 
-TODO: Record the licences for the models and assets used in the final release.
+| Asset in the verified cut | Source and terms |
+| --- | --- |
+| Approved character reference and shot illustrations | Generated through Cloudflare Workers AI with FLUX.2 Klein 4B. Black Forest Labs publishes its model weights under Apache 2.0. Cloudflare links the terms for the hosted model. [Model card](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B) · [Hosted endpoint](https://developers.cloudflare.com/workers-ai/models/flux-2-klein-4b/) |
+| English narration | Generated with a Gemini API synthetic voice. Google states that it does not claim ownership of original generated content and that the user is responsible for its use. [Gemini API terms](https://ai.google.dev/gemini-api/terms#use-generated) |
+| Temporary score | Synthesized locally from sine tones in the pipeline. [Synthesis source](pipeline/radio.py) |
+| Motion, captions, and end card | Rendered locally by FFmpeg. FFmpeg's software licence depends on its build options. The Windows overlay uses the installed Arial font when available. [FFmpeg licensing](https://www.ffmpeg.org/legal.html) · [Assembly code](pipeline/assemble.py) |
+
+The verified cut uses FFmpeg pan-and-zoom for all ten shots. If a later cut imports Wan motion or an ACE-Step score, record the exact model, checkpoint, and applicable terms for those assets before release.
